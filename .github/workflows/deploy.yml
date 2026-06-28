@@ -1,0 +1,146 @@
+name: CI/CD → Vercel
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────
+  # CI — runs on every push & PR
+  # Validates composer dependencies and builds frontend assets
+  # ─────────────────────────────────────────────────────────────────
+  ci:
+    name: 🔨 Build & Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── PHP Setup ────────────────────────────────────────────────
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo, pdo_mysql, zip, bcmath, ctype, fileinfo, openssl, tokenizer, xml
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            composer-${{ runner.os }}-
+
+      - name: Install Composer dependencies
+        run: composer install --no-dev --optimize-autoloader --prefer-dist --no-progress --no-interaction
+
+      # ── Node.js Setup ────────────────────────────────────────────
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Build frontend assets (Vite)
+        run: npm run build
+
+      # ── Verify build output exists ───────────────────────────────
+      - name: Verify public/build output
+        run: |
+          if [ ! -d "public/build" ]; then
+            echo "❌ public/build directory not found — Vite build failed"
+            exit 1
+          fi
+          echo "✅ Frontend build successful"
+          ls -la public/build/
+
+  # ─────────────────────────────────────────────────────────────────
+  # CD — deploy to Vercel Production (push to main only)
+  # Uses vercel build + vercel deploy --prebuilt so Vercel does NOT
+  # re-run composer or npm — the build is fully owned by GitHub Actions
+  # ─────────────────────────────────────────────────────────────────
+  deploy:
+    name: 🚀 Deploy → Vercel Production
+    runs-on: ubuntu-latest
+    needs: ci
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      # Pull project settings & environment info from Vercel
+      - name: Pull Vercel environment information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      # vercel build runs the build pipeline (including vercel-php runtime
+      # which handles composer install) inside the GitHub Actions runner,
+      # producing pre-built artifacts in .vercel/output/
+      - name: Build project with Vercel CLI
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      # Deploy the pre-built .vercel/output/ — Vercel skips re-building
+      - name: Deploy pre-built artifacts to Vercel
+        id: deploy
+        run: |
+          DEPLOY_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$DEPLOY_URL" >> $GITHUB_OUTPUT
+          echo "✅ Deployed to: $DEPLOY_URL"
+
+      - name: Print deployment URL
+        run: echo "🌐 Production URL → ${{ steps.deploy.outputs.url }}"
+
+  # ─────────────────────────────────────────────────────────────────
+  # Preview — deploy preview URL on every PR (optional)
+  # ─────────────────────────────────────────────────────────────────
+  preview:
+    name: 🔍 Deploy → Vercel Preview
+    runs-on: ubuntu-latest
+    needs: ci
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Pull Vercel environment information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build project with Vercel CLI
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy preview to Vercel
+        id: preview
+        run: |
+          PREVIEW_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+          echo "🔍 Preview URL: $PREVIEW_URL"
+
+      - name: Comment preview URL on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🔍 Vercel Preview Deployment\n\n✅ Preview ready at: **${{ steps.preview.outputs.url }}**\n\nCommit: \`${{ github.sha }}\``
+            })
