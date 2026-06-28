@@ -13,6 +13,8 @@ use App\Http\Controllers\Admin\PenyerahanBarangController;
 use App\Http\Controllers\Admin\PengajuanGadaiController;
 use Illuminate\Support\Facades\Route;
 
+Route::redirect('/', '/admin/dashboard');
+
 Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/dashboard',
