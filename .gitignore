@@ -20,6 +20,10 @@
 /public/storage
 /storage/*.key
 /storage/pail
+
+# Allow SSL certs for TiDB Cloud (needed for Vercel deployment)
+!storage/certs/
+!storage/certs/*.pem
 /vendor
 _ide_helper.php
 Homestead.json
