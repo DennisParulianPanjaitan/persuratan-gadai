@@ -58,9 +58,18 @@
 						<td>
 							<div style="display:flex;flex-wrap:wrap;gap:8px;">
 								<x-button href="#" variant="secondary">Lihat</x-button>
-								<form method="POST" action="{{ route('admin.pengajuan-gadai.terima', $barang->id_barang) }}" class="js-swal-confirm" data-title="Terima barang ini?" data-text="Status verifikasi akan berubah menjadi Terverifikasi." data-confirm="Ya, terima" data-cancel="Batal">
+								<form method="POST"
+								      action="{{ route('admin.pengajuan-gadai.terima', $barang->id_barang) }}"
+								      class="js-swal-confirm-price"
+								      data-title="Terima Barang Gadai"
+								      data-confirm="Ya, Terima"
+								      data-cancel="Batal"
+								      data-harga-beli="{{ $barang->harga_beli }}"
+								      data-id-barang="{{ $barang->id_barang }}"
+								      data-nama-barang="{{ $barang->nama_barang }}">
 									@csrf
 									@method('PATCH')
+									<input type="hidden" name="harga_gadai" class="js-harga-gadai-input">
 									<button type="submit" class="button button--primary">Terima</button>
 								</form>
 								<form method="POST" action="{{ route('admin.pengajuan-gadai.tolak', $barang->id_barang) }}" class="js-swal-confirm" data-title="Tolak barang ini?" data-text="Status verifikasi akan berubah menjadi Ditolak." data-confirm="Ya, tolak" data-cancel="Batal">
