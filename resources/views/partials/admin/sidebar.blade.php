@@ -33,8 +33,8 @@
         MASTER DATA
     </span>
 
-    <a href="{{ route('admin.jenis-barang.index') }}"
-       class="menu {{ request()->routeIs('admin.jenis-barang.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.jenis_barang.index') }}"
+       class="menu {{ request()->routeIs('admin.jenis_barang.*') ? 'active' : '' }}">
 
         <i class="bi bi-box-seam"></i>
 
@@ -66,8 +66,8 @@
         TRANSAKSI
     </span>
 
-    <a href="{{ route('admin.pengajuan-gadai.index') }}"
-       class="menu {{ request()->routeIs('admin.pengajuan-gadai.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.pengajuan_gadai.index') }}"
+       class="menu {{ request()->routeIs('admin.pengajuan_gadai.*') ? 'active' : '' }}">
 
         <i class="bi bi-wallet2"></i>
 
@@ -75,8 +75,8 @@
 
     </a>
 
-        <a href="{{ route('admin.penyerahan-barang.index') }}"
-       class="menu {{ request()->routeIs('admin.penyerahan-barang.*') ? 'active' : '' }}">
+        <a href="{{ route('admin.penyerahan_barang.index') }}"
+       class="menu {{ request()->routeIs('admin.penyerahan_barang.*') ? 'active' : '' }}">
 
         <i class="bi bi-wallet2"></i>
 
@@ -85,8 +85,8 @@
     </a>
 
 
-    <a href="{{ route('admin.transaksi-gadai.index') }}"
-       class="menu {{ request()->routeIs('admin.transaksi-gadai.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.transaksi_gadai.index') }}"
+       class="menu {{ request()->routeIs('admin.transaksi_gadai.*') ? 'active' : '' }}">
 
         <i class="bi bi-wallet2"></i>
 
@@ -94,8 +94,8 @@
 
     </a>
 
-    <a href="{{ route('admin.transaksi-perpanjangan.index') }}"
-       class="menu {{ request()->routeIs('admin.transaksi-perpanjangan.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.transaksi_perpanjangan.index') }}"
+       class="menu {{ request()->routeIs('admin.transaksi_perpanjangan.*') ? 'active' : '' }}">
 
         <i class="bi bi-arrow-repeat"></i>
 
@@ -103,8 +103,8 @@
 
     </a>
 
-    <a href="{{ route('admin.transaksi-penjualan.index') }}"
-       class="menu {{ request()->routeIs('admin.transaksi-penjualan.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.transaksi_penjualan.index') }}"
+       class="menu {{ request()->routeIs('admin.transaksi_penjualan.*') ? 'active' : '' }}">
 
         <i class="bi bi-cart-check"></i>
 

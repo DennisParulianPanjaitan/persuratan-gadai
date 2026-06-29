@@ -59,9 +59,13 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA', base_path('storage/certs/isrgrootx1.pem')),
-            ]) : [],
+            // (versi deployment)
+            // 'options' => extension_loaded('pdo_mysql') ? array_filter([
+            //     PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA', base_path('storage/certs/isrgrootx1.pem')),
+            // ]) : [],
+            'options' => extension_loaded('pdo_mysql') && env('MYSQL_ATTR_SSL_CA')
+                ? [Pdo\Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA')]
+                : [],
         ],
 
         'mariadb' => [
@@ -79,9 +83,13 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA', base_path('storage/certs/isrgrootx1.pem')),
-            ]) : [],
+            // (versi deployment)
+            // 'options' => extension_loaded('pdo_mysql') ? array_filter([
+            //     PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA', base_path('storage/certs/isrgrootx1.pem')),
+            // ]) : [],
+            'options' => extension_loaded('pdo_mysql') && env('MYSQL_ATTR_SSL_CA')
+                ? [Pdo\Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA')]
+                : [],
         ],
 
         'pgsql' => [

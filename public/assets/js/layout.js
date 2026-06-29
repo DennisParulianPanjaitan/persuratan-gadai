@@ -17,37 +17,60 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggle = document.getElementById("toggleSidebar");
 
     // ==========================
-    // LOAD STATUS
+    // LOAD STATUS (Desktop only)
     // ==========================
 
-    const collapsed = localStorage.getItem("sidebar");
+    const isMobile = () => window.innerWidth <= 768;
 
-    if (collapsed === "close") {
-
-        sidebar.classList.add("close");
-        main.classList.add("expand");
-
+    if (!isMobile()) {
+        const collapsed = localStorage.getItem("sidebar");
+        if (collapsed === "close") {
+            sidebar.classList.add("close");
+            main.classList.add("expand");
+        }
     }
 
     // ==========================
     // TOGGLE SIDEBAR
     // ==========================
 
+    const overlay = document.getElementById("sidebarOverlay");
+
+    const openMobileSidebar = () => {
+        sidebar.classList.add("show");
+        overlay.classList.add("show");
+        document.body.style.overflow = "hidden"; // cegah scroll background
+    };
+
+    const closeMobileSidebar = () => {
+        sidebar.classList.remove("show");
+        overlay.classList.remove("show");
+        document.body.style.overflow = "";
+    };
+
     toggle.addEventListener("click", () => {
 
-        sidebar.classList.toggle("close");
-        main.classList.toggle("expand");
-
-        if (sidebar.classList.contains("close")) {
-
-            localStorage.setItem("sidebar", "close");
-
+        if (isMobile()) {
+            if (sidebar.classList.contains("show")) {
+                closeMobileSidebar();
+            } else {
+                openMobileSidebar();
+            }
         } else {
+            // Desktop: toggle .close dan .expand
+            sidebar.classList.toggle("close");
+            main.classList.toggle("expand");
 
-            localStorage.setItem("sidebar", "open");
-
+            localStorage.setItem("sidebar",
+                sidebar.classList.contains("close") ? "close" : "open"
+            );
         }
 
+    });
+
+    // Tutup sidebar saat klik overlay
+    overlay.addEventListener("click", () => {
+        if (isMobile()) closeMobileSidebar();
     });
 
     const flashSuccess = document.getElementById('flash-success');
@@ -58,6 +81,17 @@ document.addEventListener("DOMContentLoaded", () => {
             title: 'Berhasil',
             text: flashSuccess.dataset.message,
             confirmButtonColor: '#4F46E5'
+        });
+    }
+
+    const flashError = document.getElementById('flash-error');
+
+    if (flashError && window.Swal) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: flashError.dataset.message,
+            confirmButtonColor: '#EF4444'
         });
     }
 
@@ -100,16 +134,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const hargaBeli   = parseFloat(form.dataset.hargaBeli) || 0;
-            const namaBarang  = form.dataset.namaBarang || 'Barang';
+            const hargaBeli = parseFloat(form.dataset.hargaBeli) || 0;
+            const namaBarang = form.dataset.namaBarang || 'Barang';
             const hargaGadaiDefault = Math.round(hargaBeli * 0.5);
 
             const fmt = (n) => 'Rp ' + Math.round(n).toLocaleString('id-ID');
 
             const hitungKalkulasi = (hargaGadai) => {
-                const hargaJual    = hargaGadai * 1.5;
-                const bungaBulan   = hargaGadai * 0.075;
-                const totalBunga   = bungaBulan * 4;
+                const hargaJual = hargaGadai * 1.5;
+                const bungaBulan = hargaGadai * 0.075;
+                const totalBunga = bungaBulan * 4;
                 const totalDitebus = hargaGadai + totalBunga;
                 return { hargaJual, bungaBulan, totalBunga, totalDitebus };
             };

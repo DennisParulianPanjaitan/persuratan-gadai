@@ -24,6 +24,7 @@ class BarangModels extends Model
         'berat',
         'foto_barang',
         'status_verifikasi',
+        'harga_gadai_sementara',
         'keterangan'
     ];
 

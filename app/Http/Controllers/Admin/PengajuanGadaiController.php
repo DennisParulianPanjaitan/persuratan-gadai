@@ -47,30 +47,15 @@ class PengajuanGadaiController extends Controller
 
         $hargaGadai = (float) $request->harga_gadai;
 
-        // Generate kode transaksi unik
-        $kodeTransaksi = 'TRX-' . strtoupper(substr(md5(uniqid()), 0, 8)) . '-' . $barang->id_barang;
-
-        // Simpan ke t_transaksi_gadai
-        TransaksiGadaiModels::create([
-            'id_pelanggan'         => null,           // akan dilengkapi di penyerahan barang
-            'id_barang'            => $barang->id_barang,
-            'id_user'              => 1,              // sementara, nanti ganti auth()->id()
-            'kode_transaksi'       => $kodeTransaksi,
-            'uang_pinjaman'        => $hargaGadai,
-            'tanggal_gadai'        => now()->toDateString(),
-            'tanggal_jatuh_tempo'  => now()->addMonths(4)->toDateString(),
-            'status'               => 'aktif',
-            'jumlah_perpanjangan'  => 0,
-        ]);
-
-        // Update status barang menjadi terverifikasi
+        // Update status barang menjadi terverifikasi dan simpan harga sementara
         $barang->update([
             'status_verifikasi' => 'terverifikasi',
+            'harga_gadai_sementara' => $hargaGadai,
         ]);
 
         return redirect()
             ->route('admin.pengajuan-gadai.index')
-            ->with('success', "Barang \"{$barang->nama_barang}\" berhasil diterima. Kode transaksi: {$kodeTransaksi}.");
+            ->with('success', "Barang \"{$barang->nama_barang}\" berhasil diterima (Harga Gadai: Rp " . number_format($hargaGadai, 0, ',', '.') . "). Menunggu penyerahan barang fisik.");
     }
 
     public function tolak(BarangModels $barang): RedirectResponse

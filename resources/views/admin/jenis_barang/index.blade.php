@@ -6,7 +6,7 @@
 			title="Jenis Barang"
 			breadcrumb="Dashboard > Master Data > Jenis Barang"
 			buttonText="+ Tambah Jenis Barang"
-			buttonUrl="#"
+			buttonUrl="{{ route('admin.jenis_barang.create') }}"
 		/>
 
 		<x-card>
@@ -43,9 +43,13 @@
 						<td>{{ $jenisBarang->deskripsi ?: '-' }}</td>
 						<td>
 							<div style="display:flex;flex-wrap:wrap;gap:8px;">
-								<x-button href="#" variant="secondary">Lihat</x-button>
-								<x-button href="#" variant="primary">Edit</x-button>
-								<x-button href="#" variant="danger">Hapus</x-button>
+								<x-button href="{{ route('admin.jenis_barang.edit', $jenisBarang->id_jenis_barang) }}" variant="primary">Edit</x-button>
+
+								<form action="{{ route('admin.jenis_barang.destroy', $jenisBarang->id_jenis_barang) }}" method="POST" class="js-swal-confirm" data-title="Hapus Jenis Barang?" data-text="Anda yakin ingin menghapus {{ $jenisBarang->nama_jenis }}? Data ini tidak dapat dikembalikan.">
+									@csrf
+									@method('DELETE')
+									<x-button type="submit" variant="danger">Hapus</x-button>
+								</form>
 							</div>
 						</td>
 					</tr>
@@ -58,17 +62,7 @@
 				@endforelse
 			</x-table>
 
-			<div class="pagination-bar">
-				<div class="pagination-bar__info">
-					Menampilkan <strong>{{ $jenisBarangList->count() }}</strong> data dari database
-				</div>
-
-				<div class="pagination-bar__nav">
-					<button class="pagination-btn" type="button">Prev</button>
-					<button class="pagination-btn is-active" type="button">1</button>
-					<button class="pagination-btn" type="button">Next</button>
-				</div>
-			</div>
+			<x-pagination :paginator="$jenisBarangList" />
 		</x-card>
 	</div>
 @endsection

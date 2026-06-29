@@ -22,7 +22,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         ->name('dashboard');
 
     Route::resource('jenis-barang',
-        JenisBarangController::class);
+        JenisBarangController::class)->names('jenis_barang');
 
     Route::resource('pelanggan',
         PelangganController::class);
@@ -31,13 +31,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         BarangController::class);
 
     Route::resource('transaksi-gadai',
-        TransaksiGadaiController::class);
+        TransaksiGadaiController::class)->names('transaksi_gadai');
 
     Route::resource('transaksi-perpanjangan',
-        TransaksiPerpanjanganController::class);
+        TransaksiPerpanjanganController::class)->names('transaksi_perpanjangan');
 
     Route::resource('transaksi-penjualan',
-        TransaksiPenjualanController::class);
+        TransaksiPenjualanController::class)->names('transaksi_penjualan');
 
     Route::get('/laporan',
         [LaporanController::class,'index'])
@@ -47,14 +47,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         [ProfileController::class,'index'])
         ->name('profile');
 
-Route::resource('pengajuan-gadai', PengajuanGadaiController::class);
+Route::resource('pengajuan-gadai', PengajuanGadaiController::class)->names('pengajuan_gadai');
 
     Route::patch('pengajuan-gadai/{barang:id_barang}/terima', [PengajuanGadaiController::class, 'terima'])
-        ->name('pengajuan-gadai.terima');
+        ->name('pengajuan_gadai.terima');
 
     Route::patch('pengajuan-gadai/{barang:id_barang}/tolak', [PengajuanGadaiController::class, 'tolak'])
-        ->name('pengajuan-gadai.tolak');
+        ->name('pengajuan_gadai.tolak');
 
-Route::resource('penyerahan-barang', PenyerahanBarangController::class);
+Route::resource('penyerahan-barang', PenyerahanBarangController::class)->names('penyerahan_barang');
 
 });

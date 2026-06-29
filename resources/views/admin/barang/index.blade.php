@@ -6,7 +6,7 @@
 			title="Barang"
 			breadcrumb="Dashboard > Master Data > Barang"
 			buttonText="+ Tambah Barang"
-			buttonUrl="#"
+			buttonUrl="{{ route('admin.barang.create') }}"
 		/>
 
 		<x-card>
@@ -111,17 +111,7 @@
 				@endforelse
 			</x-table>
 
-			<div class="pagination-bar">
-				<div class="pagination-bar__info">
-					Menampilkan <strong>{{ $barangList->count() }}</strong> data dari database
-				</div>
-
-				<div class="pagination-bar__nav">
-					<button class="pagination-btn" type="button">Prev</button>
-					<button class="pagination-btn is-active" type="button">1</button>
-					<button class="pagination-btn" type="button">Next</button>
-				</div>
-			</div>
+			<x-pagination :paginator="$barangList" />
 		</x-card>
 	</div>
 @endsection

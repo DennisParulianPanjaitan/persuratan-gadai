@@ -36,6 +36,9 @@
 
 <div class="wrapper">
 
+    {{-- Overlay gelap saat sidebar mobile terbuka --}}
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
     @include('partials.admin.sidebar')
 
     <div class="main">
@@ -43,6 +46,14 @@
         @include('partials.admin.navbar')
 
         <div class="content">
+
+            @if (session('success'))
+                <div id="flash-success" data-message="{{ session('success') }}" style="display: none;"></div>
+            @endif
+
+            @if (session('error'))
+                <div id="flash-error" data-message="{{ session('error') }}" style="display: none;"></div>
+            @endif
 
             @yield('content')
 
