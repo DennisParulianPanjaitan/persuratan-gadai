@@ -42,20 +42,25 @@ class PelangganController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'nama'       => 'required|string|max:100',
-            'no_hp'      => 'required|string|max:20',
+            'id_user'    => 'nullable|exists:users,id_user',
+            'nama'       => 'required|string|max:100|unique:m_pelanggan,nama',
+            'no_hp'      => 'required|string|max:20|unique:m_pelanggan,no_hp',
             'alamat'     => 'required|string|max:500',
-            'email'      => 'nullable|email|max:100',
+            'email'      => 'nullable|email|max:100|unique:m_pelanggan,email',
             'keterangan' => 'nullable|string|max:1000',
         ], [
+            'id_user.exists'  => 'User tidak ditemukan.',
             'nama.required'   => 'Nama lengkap wajib diisi.',
+            'nama.unique'     => 'Nama pelanggan ini sudah terdaftar.',
             'no_hp.required'  => 'Nomor handphone wajib diisi.',
+            'no_hp.unique'    => 'Nomor handphone ini sudah digunakan pelanggan lain.',
             'alamat.required' => 'Alamat lengkap wajib diisi.',
             'email.email'     => 'Format email tidak valid.',
+            'email.unique'    => 'Email ini sudah digunakan pelanggan lain.',
         ]);
 
         $data = $request->only([
-            'nama', 'no_hp', 'alamat', 'email', 'keterangan'
+            'id_user', 'nama', 'no_hp', 'alamat', 'email', 'keterangan'
         ]);
 
         PelangganModels::create($data);
@@ -64,4 +69,61 @@ class PelangganController extends Controller
             ->route('admin.pelanggan.index')
             ->with('success', "Pelanggan \"{$request->nama}\" berhasil ditambahkan.");
     }
+
+    public function edit($id)
+    {
+        $pelanggan = PelangganModels::findOrFail($id);
+        return view('admin.pelanggan.edit', compact('pelanggan'));
+    }
+
+    public function update(Request $request, $id): RedirectResponse
+    {
+        $pelanggan = PelangganModels::findOrFail($id);
+
+        $request->validate([
+            'id_user'    => 'nullable|exists:users,id_user',
+            'nama'       => 'required|string|max:100|unique:m_pelanggan,nama,' . $pelanggan->id_pelanggan . ',id_pelanggan',
+            'no_hp'      => 'required|string|max:20|unique:m_pelanggan,no_hp,' . $pelanggan->id_pelanggan . ',id_pelanggan',
+            'alamat'     => 'required|string|max:500',
+            'email'      => 'nullable|email|max:100|unique:m_pelanggan,email,' . $pelanggan->id_pelanggan . ',id_pelanggan',
+            'keterangan' => 'nullable|string|max:1000',
+        ], [
+            'id_user.exists'  => 'User tidak ditemukan.',
+            'nama.required'   => 'Nama lengkap wajib diisi.',
+            'nama.unique'     => 'Nama pelanggan ini sudah terdaftar.',
+            'no_hp.required'  => 'Nomor handphone wajib diisi.',
+            'no_hp.unique'    => 'Nomor handphone ini sudah digunakan pelanggan lain.',
+            'alamat.required' => 'Alamat lengkap wajib diisi.',
+            'email.email'     => 'Format email tidak valid.',
+            'email.unique'    => 'Email ini sudah digunakan pelanggan lain.',
+        ]);
+
+        $data = $request->only([
+            'id_user', 'nama', 'no_hp', 'alamat', 'email', 'keterangan'
+        ]);
+
+        $pelanggan->update($data);
+
+        return redirect()
+            ->route('admin.pelanggan.index')
+            ->with('success', "Pelanggan \"{$request->nama}\" berhasil diperbarui.");
+    }
+
+    public function destroy($id): RedirectResponse
+    {
+        $pelanggan = PelangganModels::findOrFail($id);
+
+        if ($pelanggan->transaksiGadai()->exists()) {
+            return redirect()
+                ->route('admin.pelanggan.index')
+                ->with('error', "Pelanggan \"{$pelanggan->nama}\" tidak dapat dihapus karena masih memiliki riwayat transaksi gadai.");
+        }
+
+        $pelanggan->delete();
+
+        return redirect()
+            ->route('admin.pelanggan.index')
+            ->with('success', "Pelanggan \"{$pelanggan->nama}\" berhasil dihapus.");
+    }
 }
+

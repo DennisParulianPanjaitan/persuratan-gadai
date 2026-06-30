@@ -62,7 +62,7 @@
 						</td>
 						<td>
 							<div style="display:flex;flex-wrap:wrap;gap:8px;">
-								<x-button href="#" variant="primary">Proses Transaksi</x-button>
+								<x-button href="{{ route('admin.penyerahan_barang.show', $barang) }}" variant="primary">Proses Transaksi</x-button>
 							</div>
 						</td>
 					</tr>

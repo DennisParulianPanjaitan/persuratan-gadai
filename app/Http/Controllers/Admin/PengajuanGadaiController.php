@@ -54,7 +54,7 @@ class PengajuanGadaiController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.pengajuan-gadai.index')
+            ->route('admin.pengajuan_gadai.index')
             ->with('success', "Barang \"{$barang->nama_barang}\" berhasil diterima (Harga Gadai: Rp " . number_format($hargaGadai, 0, ',', '.') . "). Menunggu penyerahan barang fisik.");
     }
 
@@ -65,7 +65,7 @@ class PengajuanGadaiController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.pengajuan-gadai.index')
+            ->route('admin.pengajuan_gadai.index')
             ->with('success', 'Barang berhasil ditolak.');
     }
 }

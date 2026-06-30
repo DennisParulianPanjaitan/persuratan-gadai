@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/admin/dashboard');
 
+Route::get('/surat-gadai/{barang}', [\App\Http\Controllers\PublicSuratGadaiController::class, 'show'])
+    ->name('public.surat_gadai');
+
 Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/dashboard',
@@ -30,18 +33,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('barang',
         BarangController::class);
 
-    Route::resource('transaksi-gadai',
-        TransaksiGadaiController::class)->names('transaksi_gadai');
+Route::resource('transaksi-gadai', TransaksiGadaiController::class)->names('transaksi_gadai');
 
-    Route::resource('transaksi-perpanjangan',
-        TransaksiPerpanjanganController::class)->names('transaksi_perpanjangan');
+    Route::patch('transaksi-gadai/{transaksi_gadai}/tebus', [TransaksiGadaiController::class, 'tebus'])
+        ->name('transaksi_gadai.tebus');
+
+    Route::patch('transaksi-gadai/{transaksi_gadai}/jual', [TransaksiGadaiController::class, 'jual'])
+        ->name('transaksi_gadai.jual');
+
+    Route::patch('transaksi-gadai/{transaksi_gadai}/perpanjang', [TransaksiGadaiController::class, 'perpanjang'])
+        ->name('transaksi_gadai.perpanjang');
 
     Route::resource('transaksi-penjualan',
         TransaksiPenjualanController::class)->names('transaksi_penjualan');
 
-    Route::get('/laporan',
-        [LaporanController::class,'index'])
-        ->name('laporan');
+    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
+    Route::get('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
 
     Route::get('/profile',
         [ProfileController::class,'index'])
@@ -55,6 +62,14 @@ Route::resource('pengajuan-gadai', PengajuanGadaiController::class)->names('peng
     Route::patch('pengajuan-gadai/{barang:id_barang}/tolak', [PengajuanGadaiController::class, 'tolak'])
         ->name('pengajuan_gadai.tolak');
 
-Route::resource('penyerahan-barang', PenyerahanBarangController::class)->names('penyerahan_barang');
+Route::resource('penyerahan-barang', PenyerahanBarangController::class)
+    ->parameters(['penyerahan-barang' => 'barang'])
+    ->names('penyerahan_barang');
+
+    Route::patch('penyerahan-barang/{barang:id_barang}/terima', [PenyerahanBarangController::class, 'terima'])
+        ->name('penyerahan_barang.terima');
+
+    Route::patch('penyerahan-barang/{barang:id_barang}/tolak', [PenyerahanBarangController::class, 'tolak'])
+        ->name('penyerahan_barang.tolak');
 
 });

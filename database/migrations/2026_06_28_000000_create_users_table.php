@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nama', 100);
             $table->string('email', 100)->unique();
             $table->string('password');
-            $table->enum('role', ['admin', 'petugas'])->default('petugas');
+            $table->enum('role', ['admin', 'pelanggan'])->default('pelanggan');
             $table->boolean('status_aktif')->default(true);
             $table->timestamps();
         });

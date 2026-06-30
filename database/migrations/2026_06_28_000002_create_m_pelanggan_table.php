@@ -14,6 +14,8 @@ return new class extends Migration
             $table->collation = 'utf8mb4_0900_ai_ci';
 
             $table->increments('id_pelanggan');
+            $table->unsignedInteger('id_user')->nullable();
+            $table->foreign('id_user')->references('id_user')->on('users')->onDelete('set null');
             $table->string('nama', 100);
             $table->string('no_hp', 20)->nullable();
             $table->string('alamat', 255)->nullable();

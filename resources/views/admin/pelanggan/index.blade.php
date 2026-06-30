@@ -37,9 +37,16 @@
 				</div>
 			</form>
 
-			<x-table :headers="['Nama', 'No HP', 'Alamat', 'Email', 'Keterangan', 'Aksi']">
+			<x-table :headers="['ID User', 'Nama', 'No HP', 'Alamat', 'Email', 'Keterangan', 'Aksi']">
 				@forelse ($pelangganList as $pelanggan)
 					<tr>
+						<td>
+							@if($pelanggan->id_user)
+								<span style="display:inline-block;padding:2px 8px;background:#E2E8F0;border-radius:4px;font-size:12px;font-weight:600;color:#334155;">User #{{ $pelanggan->id_user }}</span>
+							@else
+								<span style="color:#94A3B8;font-style:italic;font-size:13px;">(tidak terdaftar)</span>
+							@endif
+						</td>
 						<td style="font-weight:600;color:#0F172A;">{{ $pelanggan->nama }}</td>
 						<td>{{ $pelanggan->no_hp ?: '-' }}</td>
 						<td>{{ $pelanggan->alamat ?: '-' }}</td>
@@ -47,15 +54,19 @@
 						<td>{{ $pelanggan->keterangan ?: '-' }}</td>
 						<td>
 							<div style="display:flex;flex-wrap:wrap;gap:8px;">
-								<x-button href="#" variant="secondary">Lihat</x-button>
-								<x-button href="#" variant="primary">Edit</x-button>
-								<x-button href="#" variant="danger">Hapus</x-button>
+								<x-button href="{{ route('admin.pelanggan.edit', $pelanggan->id_pelanggan) }}" variant="primary">Edit</x-button>
+
+								<form action="{{ route('admin.pelanggan.destroy', $pelanggan->id_pelanggan) }}" method="POST" class="js-swal-confirm" data-title="Hapus Pelanggan?" data-text="Anda yakin ingin menghapus pelanggan {{ $pelanggan->nama }}? Data ini tidak dapat dikembalikan.">
+									@csrf
+									@method('DELETE')
+									<x-button type="submit" variant="danger">Hapus</x-button>
+								</form>
 							</div>
 						</td>
 					</tr>
 				@empty
 					<tr>
-						<td colspan="6" style="text-align:center;padding:28px 18px;color:#64748B;">
+						<td colspan="7" style="text-align:center;padding:28px 18px;color:#64748B;">
 							Data pelanggan belum tersedia.
 						</td>
 					</tr>

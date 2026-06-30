@@ -94,14 +94,7 @@
 
     </a>
 
-    <a href="{{ route('admin.transaksi_perpanjangan.index') }}"
-       class="menu {{ request()->routeIs('admin.transaksi_perpanjangan.*') ? 'active' : '' }}">
 
-        <i class="bi bi-arrow-repeat"></i>
-
-        <span>Perpanjangan</span>
-
-    </a>
 
     <a href="{{ route('admin.transaksi_penjualan.index') }}"
        class="menu {{ request()->routeIs('admin.transaksi_penjualan.*') ? 'active' : '' }}">

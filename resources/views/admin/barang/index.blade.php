@@ -61,7 +61,7 @@
 			<x-table :headers="['Foto', 'Nama Barang', 'Jenis', 'Harga', 'Status', 'Aksi']">
 				@forelse ($barangList as $barang)
 					<tr>
-						<td>{{ $barang->foto_barang ?: '-' }}</td>
+
 						<td>
 							@if ($barang->foto_barang)
 								@php
@@ -97,8 +97,12 @@
 						<td>
 							<div style="display:flex;flex-wrap:wrap;gap:8px;">
 								<x-button href="{{ route('admin.barang.show', $barang) }}" variant="secondary">Lihat</x-button>
-								<x-button href="#" variant="primary">Edit</x-button>
-								<x-button href="#" variant="danger">Hapus</x-button>
+								<x-button href="{{ route('admin.barang.edit', $barang) }}" variant="primary">Edit</x-button>
+								<form action="{{ route('admin.barang.destroy', $barang) }}" method="POST" class="js-swal-confirm" data-title="Hapus Barang?" data-text="Anda yakin ingin menghapus barang {{ $barang->nama_barang }}? Data ini tidak dapat dikembalikan.">
+									@csrf
+									@method('DELETE')
+									<x-button type="submit" variant="danger">Hapus</x-button>
+								</form>
 							</div>
 						</td>
 					</tr>

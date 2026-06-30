@@ -53,12 +53,12 @@
 
 				<div class="barang-detail-qr">
 					<div class="barang-detail-qr__box">
-						{!! QrCode::size(190)->margin(1)->generate(route('admin.barang.show', $barang)) !!}
+						{!! QrCode::size(190)->margin(1)->generate(route('public.surat_gadai', $barang)) !!}
 					</div>
 					<div class="barang-detail-qr__text">
-						QR ini berisi link detail barang untuk dicek lewat scan HP.
+						QR ini berisi link Bukti Gadai digital untuk discan oleh Pelanggan.
 					</div>
-					<div class="barang-detail-qr__url">{{ route('admin.barang.show', $barang) }}</div>
+					<div class="barang-detail-qr__url">{{ route('public.surat_gadai', $barang) }}</div>
 				</div>
 			</x-card>
 

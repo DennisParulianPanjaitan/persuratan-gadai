@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('berat', 10, 2)->nullable();
             $table->string('foto_barang', 255)->nullable();
             $table->enum('status_verifikasi', ['pending', 'terverifikasi', 'ditolak'])->default('pending');
+            $table->decimal('harga_gadai_sementara', 15, 2)->nullable();
             $table->text('keterangan')->nullable();
             $table->timestamps();
 

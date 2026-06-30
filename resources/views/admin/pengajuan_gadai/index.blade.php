@@ -5,8 +5,6 @@
 		<x-page-header
 			title="Pengajuan Gadai"
 			breadcrumb="Dashboard > Pengajuan Gadai"
-			buttonText="+ Transaksi Baru"
-			buttonUrl="#"
 		/>
 
 		<x-card>
@@ -57,9 +55,9 @@
 						</td>
 						<td>
 							<div style="display:flex;flex-wrap:wrap;gap:8px;">
-								<x-button href="#" variant="secondary">Lihat</x-button>
+								<x-button href="{{ route('admin.barang.show', $barang) }}" variant="secondary">Lihat</x-button>
 								<form method="POST"
-								      action="{{ route('admin.pengajuan-gadai.terima', $barang->id_barang) }}"
+								      action="{{ route('admin.pengajuan_gadai.terima', $barang->id_barang) }}"
 								      class="js-swal-confirm-price"
 								      data-title="Terima Barang Gadai"
 								      data-confirm="Ya, Terima"
@@ -72,7 +70,7 @@
 									<input type="hidden" name="harga_gadai" class="js-harga-gadai-input">
 									<button type="submit" class="button button--primary">Terima</button>
 								</form>
-								<form method="POST" action="{{ route('admin.pengajuan-gadai.tolak', $barang->id_barang) }}" class="js-swal-confirm" data-title="Tolak barang ini?" data-text="Status verifikasi akan berubah menjadi Ditolak." data-confirm="Ya, tolak" data-cancel="Batal">
+								<form method="POST" action="{{ route('admin.pengajuan_gadai.tolak', $barang->id_barang) }}" class="js-swal-confirm" data-title="Tolak barang ini?" data-text="Status verifikasi akan berubah menjadi Ditolak." data-confirm="Ya, tolak" data-cancel="Batal">
 									@csrf
 									@method('PATCH')
 									<button type="submit" class="button button--danger">Tolak</button>

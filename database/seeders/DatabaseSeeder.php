@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
         // 1. users
         DB::table('users')->insert([
             ['id_user' => 1, 'nama' => 'Administrator', 'email' => 'admin@gerlianjaya.com', 'password' => Hash::make('password'), 'role' => 'admin', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
-            ['id_user' => 2, 'nama' => 'Budi Santoso', 'email' => 'budi@gmail.com', 'password' => Hash::make('password'), 'role' => 'petugas', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
-            ['id_user' => 3, 'nama' => 'Rina Putri', 'email' => 'rina@gmail.com', 'password' => Hash::make('password'), 'role' => 'petugas', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
-            ['id_user' => 4, 'nama' => 'Andi Wijaya', 'email' => 'andi@gmail.com', 'password' => Hash::make('password'), 'role' => 'petugas', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
-            ['id_user' => 5, 'nama' => 'Siska Lestari', 'email' => 'siska@gmail.com', 'password' => Hash::make('password'), 'role' => 'petugas', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
+            ['id_user' => 2, 'nama' => 'Budi Santoso', 'email' => 'budi@gmail.com', 'password' => Hash::make('password'), 'role' => 'pelanggan', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
+            ['id_user' => 3, 'nama' => 'Rina Putri', 'email' => 'rina@gmail.com', 'password' => Hash::make('password'), 'role' => 'pelanggan', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
+            ['id_user' => 4, 'nama' => 'Andi Wijaya', 'email' => 'andi@gmail.com', 'password' => Hash::make('password'), 'role' => 'pelanggan', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
+            ['id_user' => 5, 'nama' => 'Siska Lestari', 'email' => 'siska@gmail.com', 'password' => Hash::make('password'), 'role' => 'pelanggan', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
         ]);
 
         // 2. m_jenis_barang
@@ -33,11 +33,11 @@ class DatabaseSeeder extends Seeder
 
         // 3. m_pelanggan
         DB::table('m_pelanggan')->insert([
-            ['id_pelanggan' => 1, 'nama' => 'Ahmad Fauzi', 'no_hp' => '081234567890', 'alamat' => 'Malang', 'email' => 'ahmad@gmail.com', 'keterangan' => 'Pelanggan tetap', 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
-            ['id_pelanggan' => 2, 'nama' => 'Budi Hartono', 'no_hp' => '081234567891', 'alamat' => 'Batu', 'email' => 'budi@gmail.com', 'keterangan' => '', 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
-            ['id_pelanggan' => 3, 'nama' => 'Citra Lestari', 'no_hp' => '081234567892', 'alamat' => 'Malang', 'email' => 'citra@gmail.com', 'keterangan' => '', 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
-            ['id_pelanggan' => 4, 'nama' => 'Dedi Saputra', 'no_hp' => '081234567893', 'alamat' => 'Kepanjen', 'email' => 'dedi@gmail.com', 'keterangan' => '', 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
-            ['id_pelanggan' => 5, 'nama' => 'Eka Putri', 'no_hp' => '081234567894', 'alamat' => 'Singosari', 'email' => 'eka@gmail.com', 'keterangan' => '', 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
+            ['id_pelanggan' => 1, 'id_user' => 2, 'nama' => 'Ahmad Fauzi', 'no_hp' => '081234567890', 'alamat' => 'Malang', 'email' => 'ahmad@gmail.com', 'keterangan' => 'Pelanggan tetap', 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
+            ['id_pelanggan' => 2, 'id_user' => 3, 'nama' => 'Budi Hartono', 'no_hp' => '081234567891', 'alamat' => 'Batu', 'email' => 'budi@gmail.com', 'keterangan' => '', 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
+            ['id_pelanggan' => 3, 'id_user' => 4, 'nama' => 'Citra Lestari', 'no_hp' => '081234567892', 'alamat' => 'Malang', 'email' => 'citra@gmail.com', 'keterangan' => '', 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
+            ['id_pelanggan' => 4, 'id_user' => 5, 'nama' => 'Dedi Saputra', 'no_hp' => '081234567893', 'alamat' => 'Kepanjen', 'email' => 'dedi@gmail.com', 'keterangan' => '', 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
+            ['id_pelanggan' => 5, 'id_user' => null, 'nama' => 'Eka Putri', 'no_hp' => '081234567894', 'alamat' => 'Singosari', 'email' => 'eka@gmail.com', 'keterangan' => '', 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
         ]);
 
         // 4. m_barang

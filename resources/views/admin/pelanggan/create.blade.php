@@ -71,3 +71,16 @@
 		</x-card>
 	</div>
 @endsection
+
+@push('scripts')
+	@if ($errors->any())
+		<script>
+			Swal.fire({
+				icon: 'error',
+				title: 'Gagal Menyimpan!',
+				text: '{{ $errors->first() }}',
+				confirmButtonText: 'Mengerti'
+			});
+		</script>
+	@endif
+@endpush
