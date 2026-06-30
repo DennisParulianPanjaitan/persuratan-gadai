@@ -13,12 +13,17 @@ use App\Http\Controllers\Admin\PenyerahanBarangController;
 use App\Http\Controllers\Admin\PengajuanGadaiController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/admin/dashboard');
+Route::get('/', [\App\Http\Controllers\LandingController::class, 'index'])->name('home');
+Route::post('/cek-status', [\App\Http\Controllers\LandingController::class, 'cekStatus'])->name('cek_status');
+
+Route::get('/login', [\App\Http\Controllers\AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login']);
+Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
 
 Route::get('/surat-gadai/{barang}', [\App\Http\Controllers\PublicSuratGadaiController::class, 'show'])
     ->name('public.surat_gadai');
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:admin', 'no-cache'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/dashboard',
         [DashboardController::class,'index'])
@@ -72,4 +77,8 @@ Route::resource('penyerahan-barang', PenyerahanBarangController::class)
     Route::patch('penyerahan-barang/{barang:id_barang}/tolak', [PenyerahanBarangController::class, 'tolak'])
         ->name('penyerahan_barang.tolak');
 
+});
+
+Route::middleware(['auth', 'role:pelanggan', 'no-cache'])->prefix('pelanggan')->name('pelanggan.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Pelanggan\DashboardController::class, 'index'])->name('dashboard');
 });

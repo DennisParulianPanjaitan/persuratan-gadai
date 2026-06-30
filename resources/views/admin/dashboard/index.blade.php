@@ -7,6 +7,33 @@
         breadcrumb="Dashboard > Dashboard Admin"
     />
 
+    <!-- ETALASE BARANG LELANG (MARQUEE) -->
+    @if($barangDijual->count() > 0)
+    <div class="marquee-container" style="background: white; border-radius: 12px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: flex; align-items: center; overflow: hidden; border-left: 4px solid #f59e0b;">
+        <div style="font-weight: 700; color: #b45309; padding-right: 15px; border-right: 2px solid #fef3c7; white-space: nowrap; margin-right: 15px; display: flex; align-items: center; gap: 8px;">
+            <i class="bi bi-tags-fill"></i> Sedang Dijual
+        </div>
+        <div style="flex: 1; overflow: hidden;">
+            <marquee behavior="scroll" direction="left" scrollamount="6" onmouseover="this.stop();" onmouseout="this.start();">
+                <div style="display: inline-flex; gap: 30px;">
+                    @foreach($barangDijual as $item)
+                        <div style="display: flex; align-items: center; gap: 10px; background: #fffbeb; padding: 5px 15px; border-radius: 50px; border: 1px solid #fde68a;">
+                            <i class="bi bi-box-seam" style="color: #d97706;"></i>
+                            <span style="font-weight: 600; color: #92400e;">{{ $item->barang->nama_barang }}</span>
+                            <span style="background: #f59e0b; color: white; padding: 2px 8px; border-radius: 20px; font-size: 12px; font-weight: bold;">
+                                {{ $item->kode_transaksi }}
+                            </span>
+                            @if($item->barang->harga_gadai_sementara)
+                                <span style="color: #b45309; font-size: 14px; font-weight: 600;">(Taksiran: Rp {{ number_format($item->barang->harga_gadai_sementara, 0, ',', '.') }})</span>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </marquee>
+        </div>
+    </div>
+    @endif
+
     <!-- STAT CARDS -->
     <div class="stat-grid">
         <!-- Card 1: Total Pelanggan -->

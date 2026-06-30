@@ -15,7 +15,7 @@ return new class extends Migration
 
             $table->increments('id_user');
             $table->string('nama', 100);
-            $table->string('email', 100)->unique();
+            $table->string('username', 100)->unique();
             $table->string('password');
             $table->enum('role', ['admin', 'pelanggan'])->default('pelanggan');
             $table->boolean('status_aktif')->default(true);

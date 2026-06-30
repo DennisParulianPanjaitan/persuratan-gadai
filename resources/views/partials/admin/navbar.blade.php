@@ -18,23 +18,33 @@
 
 <div class="navbar-right">
 
-    <div class="profile">
+    <div class="profile" style="display: flex; align-items: center; gap: 15px;">
 
-        <div class="avatar">
-            AD
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="avatar" style="width: 36px; height: 36px; background: #fbbf24; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">
+                {{ Auth::check() ? strtoupper(substr(Auth::user()->nama, 0, 2)) : 'AD' }}
+            </div>
+
+            <div class="profile-info" style="display: flex; flex-direction: column;">
+                <span class="profile-name" style="font-weight: 600; font-size: 14px; color: #1f2937;">
+                    {{ Auth::check() ? Auth::user()->nama : 'Admin' }}
+                </span>
+                <span class="profile-role" style="font-size: 12px; color: #6b7280; text-transform: capitalize;">
+                    {{ Auth::check() ? Auth::user()->role : 'Administrator' }}
+                </span>
+            </div>
         </div>
 
-        <div class="profile-info">
-
-            <span class="profile-name">
-                Admin
-            </span>
-
-            <span class="profile-role">
-                Administrator
-            </span>
-
+        @if(Auth::check())
+        <div style="border-left: 1px solid #e5e7eb; padding-left: 15px; margin-left: 5px;">
+            <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                @csrf
+                <button type="submit" style="background: none; border: none; color: #dc2626; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; padding: 5px 10px; border-radius: 6px; transition: background 0.2s;">
+                    <i class="bi bi-box-arrow-right"></i> Keluar
+                </button>
+            </form>
         </div>
+        @endif
 
     </div>
 

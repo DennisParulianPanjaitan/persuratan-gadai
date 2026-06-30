@@ -19,7 +19,7 @@ class UserModels extends Authenticatable
 
     protected $fillable = [
         'nama',
-        'email',
+        'username',
         'password',
         'role',
         'status_aktif'

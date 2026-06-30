@@ -124,6 +124,15 @@ class DashboardController extends Controller
             $chartData['jual'][] = $jualCount;
         }
 
+        // 5. ETALASE BARANG DIJUAL (Marquee)
+        $barangDijual = TransaksiGadaiModels::with('barang', 'pelanggan')
+            ->where('status', 'dijual')
+            ->whereNotIn('id_transaksi_gadai', function($query) {
+                $query->select('id_transaksi_gadai')->from('t_transaksi_penjualan');
+            })
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
         return view('admin.dashboard.index', compact(
             'totalPelanggan',
             'barangGadaiAktif',
@@ -132,7 +141,8 @@ class DashboardController extends Controller
             'barangMendekatiJatuhTempo',
             'recentActivities',
             'chartData',
-            'range'
+            'range',
+            'barangDijual'
         ));
     }
 }

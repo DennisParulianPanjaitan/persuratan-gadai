@@ -15,11 +15,11 @@ class DatabaseSeeder extends Seeder
     {
         // 1. users
         DB::table('users')->insert([
-            ['id_user' => 1, 'nama' => 'Administrator', 'email' => 'admin@gerlianjaya.com', 'password' => Hash::make('password'), 'role' => 'admin', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
-            ['id_user' => 2, 'nama' => 'Budi Santoso', 'email' => 'budi@gmail.com', 'password' => Hash::make('password'), 'role' => 'pelanggan', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
-            ['id_user' => 3, 'nama' => 'Rina Putri', 'email' => 'rina@gmail.com', 'password' => Hash::make('password'), 'role' => 'pelanggan', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
-            ['id_user' => 4, 'nama' => 'Andi Wijaya', 'email' => 'andi@gmail.com', 'password' => Hash::make('password'), 'role' => 'pelanggan', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
-            ['id_user' => 5, 'nama' => 'Siska Lestari', 'email' => 'siska@gmail.com', 'password' => Hash::make('password'), 'role' => 'pelanggan', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
+            ['id_user' => 1, 'nama' => 'Administrator', 'username' => 'admin', 'password' => Hash::make('admin'), 'role' => 'admin', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
+            ['id_user' => 2, 'nama' => 'Budi Santoso', 'username' => '081234567890', 'password' => Hash::make('081234567890'), 'role' => 'pelanggan', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
+            ['id_user' => 3, 'nama' => 'Rina Putri', 'username' => '081234567891', 'password' => Hash::make('081234567891'), 'role' => 'pelanggan', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
+            ['id_user' => 4, 'nama' => 'Andi Wijaya', 'username' => '081234567892', 'password' => Hash::make('081234567892'), 'role' => 'pelanggan', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
+            ['id_user' => 5, 'nama' => 'Siska Lestari', 'username' => '081234567893', 'password' => Hash::make('081234567893'), 'role' => 'pelanggan', 'status_aktif' => 1, 'created_at' => '2026-06-28 11:25:18', 'updated_at' => '2026-06-28 11:25:18'],
         ]);
 
         // 2. m_jenis_barang
