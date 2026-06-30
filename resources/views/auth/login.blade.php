@@ -409,7 +409,7 @@
         <h2>HALAMAN LOGIN</h2>
         <h1>Sistem Informasi Persuratan Gadai</h1>
         <div class="header-line"></div>
-        <p>Aman, mudah digunakan, dan profesional untuk mendukung bisnis UMKM.</p>
+        <p>Aman, mudah digunakan, danasdsasdad profesional untuk mendukung bisnis UMKM.</p>
     </div>
 
     <!-- Main Content -->
