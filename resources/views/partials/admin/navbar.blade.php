@@ -22,12 +22,12 @@
 
         <div style="display: flex; align-items: center; gap: 10px;">
             <div class="avatar" style="width: 36px; height: 36px; background: #fbbf24; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">
-                {{ Auth::check() ? strtoupper(substr(Auth::user()->nama, 0, 2)) : 'AD' }}
+                {{ Auth::check() ? strtoupper(substr(Auth::user()->username, 0, 2)) : 'AD' }}
             </div>
 
             <div class="profile-info" style="display: flex; flex-direction: column;">
                 <span class="profile-name" style="font-weight: 600; font-size: 14px; color: #1f2937;">
-                    {{ Auth::check() ? Auth::user()->nama : 'Admin' }}
+                    {{ Auth::check() ? Auth::user()->username : 'Admin' }}
                 </span>
                 <span class="profile-role" style="font-size: 12px; color: #6b7280; text-transform: capitalize;">
                     {{ Auth::check() ? Auth::user()->role : 'Administrator' }}

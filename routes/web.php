@@ -81,4 +81,11 @@ Route::resource('penyerahan-barang', PenyerahanBarangController::class)
 
 Route::middleware(['auth', 'role:pelanggan', 'no-cache'])->prefix('pelanggan')->name('pelanggan.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Pelanggan\DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/pengajuan-gadai/create', [\App\Http\Controllers\Pelanggan\PengajuanGadaiController::class, 'create'])->name('pengajuan_gadai.create');
+    Route::post('/pengajuan-gadai', [\App\Http\Controllers\Pelanggan\PengajuanGadaiController::class, 'store'])->name('pengajuan_gadai.store');
+    
+    Route::get('/riwayat-gadai', [\App\Http\Controllers\Pelanggan\RiwayatGadaiController::class, 'index'])->name('riwayat.index');
+    Route::get('/riwayat-gadai/{id}', [\App\Http\Controllers\Pelanggan\RiwayatGadaiController::class, 'show'])->name('riwayat.show');
+    Route::delete('/riwayat-gadai/{id}', [\App\Http\Controllers\Pelanggan\RiwayatGadaiController::class, 'destroy'])->name('riwayat.destroy');
 });

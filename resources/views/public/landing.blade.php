@@ -525,7 +525,12 @@
                         <a href="https://wa.me/6285100653370?text=Halo%20UD%20Gerlian%20Jaya,%20saya%20tertarik%20dengan%20barang%20lelang%20{{ urlencode($item->barang->nama_barang) }}%20({{ $item->kode_transaksi }})" target="_blank" style="display: block; width: 280px; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.06); text-decoration: none; color: inherit; transition: transform 0.3s; border: 1px solid #f1f5f9; cursor: pointer;">
                             <div style="height: 190px; background-color: #f8fafc; position: relative;">
                                 @if($item->barang->foto_barang)
-                                    <img src="{{ asset('storage/' . $item->barang->foto_barang) }}" alt="Foto" style="width: 100%; height: 100%; object-fit: cover;">
+                                    @php
+                                        $fotoBarang = preg_match('/^https?:\/\//', $item->barang->foto_barang)
+                                            ? $item->barang->foto_barang
+                                            : asset('storage/' . ltrim($item->barang->foto_barang, '/'));
+                                    @endphp
+                                    <img src="{{ $fotoBarang }}" alt="Foto" style="width: 100%; height: 100%; object-fit: cover;">
                                 @else
                                     <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #e2e8f0, #cbd5e1);">
                                         <i class="bi bi-box-seam" style="font-size: 60px; color: #94a3b8;"></i>

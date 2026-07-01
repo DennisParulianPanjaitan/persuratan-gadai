@@ -18,6 +18,7 @@ class BarangModels extends Model
 
     protected $fillable = [
         'id_jenis_barang',
+        'id_pelanggan',
         'nama_barang',
         'harga_beli',
         'kondisi',
@@ -25,7 +26,8 @@ class BarangModels extends Model
         'foto_barang',
         'status_verifikasi',
         'harga_gadai_sementara',
-        'keterangan'
+        'keterangan',
+        'alasan_penolakan'
     ];
 
     public function getRouteKeyName()
@@ -36,6 +38,11 @@ class BarangModels extends Model
     public function jenisBarang()
     {
         return $this->belongsTo(JenisBarangModels::class, 'id_jenis_barang');
+    }
+
+    public function pelanggan()
+    {
+        return $this->belongsTo(\App\Models\PelangganModels::class, 'id_pelanggan');
     }
 
     public function transaksiGadai()

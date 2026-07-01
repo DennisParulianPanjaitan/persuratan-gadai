@@ -364,6 +364,16 @@ body {
 	padding: 30px;
 }
 
+.menu-heading {
+	display: block;
+	font-size: 11px;
+	font-weight: 700;
+	color: #64748B;
+	text-transform: uppercase;
+	letter-spacing: 1.5px;
+	margin: 24px 20px 8px;
+}
+
 .menu {
 	display: flex;
 	gap: 15px;
@@ -409,13 +419,28 @@ body {
 		display: none;
 	}
 
-	/* Sidebar mobile: mulai dari bawah navbar, z-index di atas overlay */
+	/* Sidebar mobile: menutupi layar sepenuhnya dari atas, tanpa gap */
 	.sidebar {
-		top: var(--navbar-height);
-		height: calc(100vh - var(--navbar-height));
+		top: 0;
+		height: 100vh;
 		left: -270px;
 		transition: left .3s ease;
 		z-index: 1100;
+	}
+
+	/* Kompres ukuran menu agar muat tanpa di-scroll di HP */
+	.menu {
+		padding: 10px 18px;
+		margin: 2px 12px;
+		font-size: 14px;
+	}
+	.menu-heading {
+		margin-top: 10px !important;
+		margin-bottom: 5px !important;
+		font-size: 11px !important;
+	}
+	.logo {
+		height: 60px;
 	}
 
 	.sidebar.show {

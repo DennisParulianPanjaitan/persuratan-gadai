@@ -1,13 +1,13 @@
 <aside class="sidebar" id="sidebar">
 
-    <div class="logo">
+    <div class="logo" style="gap: 10px;">
 
-        <div class="logo-icon">
-            <i class="bi bi-shield-fill-check"></i>
+        <div class="logo-icon" style="font-size: 22px; color: #fff;">
+            <i class="bi bi-hexagon-fill"></i>
         </div>
 
-        <div class="logo-text">
-            ADMIN
+        <div class="logo-text" style="font-size: 16px; font-weight: 800; color: #fff; letter-spacing: 0.5px;">
+            UD GERLIAN JAYA
         </div>
 
     </div>
@@ -36,7 +36,7 @@
     <a href="{{ route('admin.jenis_barang.index') }}"
        class="menu {{ request()->routeIs('admin.jenis_barang.*') ? 'active' : '' }}">
 
-        <i class="bi bi-box-seam"></i>
+        <i class="bi bi-tags"></i>
 
         <span>Jenis Barang</span>
 
@@ -45,7 +45,7 @@
     <a href="{{ route('admin.pelanggan.index') }}"
        class="menu {{ request()->routeIs('admin.pelanggan.*') ? 'active' : '' }}">
 
-        <i class="bi bi-people"></i>
+        <i class="bi bi-people-fill"></i>
 
         <span>Pelanggan</span>
 
@@ -54,7 +54,7 @@
     <a href="{{ route('admin.barang.index') }}"
        class="menu {{ request()->routeIs('admin.barang.*') ? 'active' : '' }}">
 
-        <i class="bi bi-bag"></i>
+        <i class="bi bi-boxes"></i>
 
         <span>Barang</span>
 
@@ -69,7 +69,7 @@
     <a href="{{ route('admin.pengajuan_gadai.index') }}"
        class="menu {{ request()->routeIs('admin.pengajuan_gadai.*') ? 'active' : '' }}">
 
-        <i class="bi bi-wallet2"></i>
+        <i class="bi bi-file-earmark-check"></i>
 
         <span>Pengajuan Gadai</span>
 
@@ -78,7 +78,7 @@
         <a href="{{ route('admin.penyerahan_barang.index') }}"
        class="menu {{ request()->routeIs('admin.penyerahan_barang.*') ? 'active' : '' }}">
 
-        <i class="bi bi-wallet2"></i>
+        <i class="bi bi-box-arrow-in-down"></i>
 
         <span>Penyerahan Barang</span>
 
@@ -88,7 +88,7 @@
     <a href="{{ route('admin.transaksi_gadai.index') }}"
        class="menu {{ request()->routeIs('admin.transaksi_gadai.*') ? 'active' : '' }}">
 
-        <i class="bi bi-wallet2"></i>
+        <i class="bi bi-cash-coin"></i>
 
         <span>Gadai</span>
 
@@ -99,7 +99,7 @@
     <a href="{{ route('admin.transaksi_penjualan.index') }}"
        class="menu {{ request()->routeIs('admin.transaksi_penjualan.*') ? 'active' : '' }}">
 
-        <i class="bi bi-cart-check"></i>
+        <i class="bi bi-cart-check-fill"></i>
 
         <span>Penjualan</span>
 
@@ -114,7 +114,7 @@
     <a href="{{ route('admin.laporan') }}"
        class="menu {{ request()->routeIs('admin.laporan') ? 'active' : '' }}">
 
-        <i class="bi bi-file-earmark-text"></i>
+        <i class="bi bi-file-earmark-bar-graph"></i>
 
         <span>Laporan</span>
 
@@ -129,7 +129,7 @@
     <a href="{{ route('admin.profile') }}"
        class="menu {{ request()->routeIs('admin.profile') ? 'active' : '' }}">
 
-        <i class="bi bi-person-circle"></i>
+        <i class="bi bi-person-gear"></i>
 
         <span>Profile</span>
 

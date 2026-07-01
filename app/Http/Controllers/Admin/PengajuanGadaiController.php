@@ -13,7 +13,7 @@ class PengajuanGadaiController extends Controller
     public function index(Request $request)
     {
         $barangQuery = BarangModels::query()
-            ->with('jenisBarang')
+            ->with(['jenisBarang', 'pelanggan'])
             ->where('status_verifikasi', 'pending');
 
         if ($request->filled('tanggal')) {
@@ -58,10 +58,15 @@ class PengajuanGadaiController extends Controller
             ->with('success', "Barang \"{$barang->nama_barang}\" berhasil diterima (Harga Gadai: Rp " . number_format($hargaGadai, 0, ',', '.') . "). Menunggu penyerahan barang fisik.");
     }
 
-    public function tolak(BarangModels $barang): RedirectResponse
+    public function tolak(Request $request, BarangModels $barang): RedirectResponse
     {
+        $request->validate([
+            'alasan_penolakan' => 'required|string'
+        ]);
+
         $barang->update([
             'status_verifikasi' => 'ditolak',
+            'alasan_penolakan' => $request->alasan_penolakan
         ]);
 
         return redirect()

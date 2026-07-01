@@ -38,7 +38,7 @@
 				</div>
 			</form>
 
-			<x-table :headers="['Foto', 'Nama Barang', 'Jenis', 'Harga', 'Status', 'Aksi']">
+			<x-table :headers="['Foto', 'Barang & Pengaju', 'Jenis', 'Harga', 'Status', 'Aksi']">
 				@forelse ($barangList as $barang)
 					<tr>
 						<td>
@@ -54,8 +54,11 @@
 							@endif
 						</td>
 						<td>
-							<div style="font-weight:600;color:#0F172A;">{{ $barang->nama_barang }}</div>
-							<div style="font-size:12px;color:#64748B;">{{ $barang->keterangan ?: '-' }}</div>
+							<div style="font-weight:600;color:#0F172A;font-size:15px;">{{ $barang->nama_barang }}</div>
+							<div style="font-size:13px;color:#64748B; margin-top:2px;">
+                                <i class="bi bi-person-fill"></i> {{ $barang->pelanggan ? $barang->pelanggan->nama : 'Offline (Toko)' }}
+                            </div>
+							<div style="font-size:12px;color:#94a3b8; margin-top:2px;">{{ $barang->keterangan ?: '-' }}</div>
 						</td>
 						<td>{{ $barang->jenisBarang->nama_jenis ?? '-' }}</td>
 						<td>{{ 'Rp ' . number_format($barang->harga_beli, 0, ',', '.') }}</td>
@@ -81,9 +84,10 @@
 									<input type="hidden" name="harga_gadai" class="js-harga-gadai-input">
 									<button type="submit" class="button button--primary">Terima</button>
 								</form>
-								<form method="POST" action="{{ route('admin.pengajuan_gadai.tolak', $barang->id_barang) }}" class="js-swal-confirm" data-title="Tolak barang ini?" data-text="Status verifikasi akan berubah menjadi Ditolak." data-confirm="Ya, tolak" data-cancel="Batal">
+								<form method="POST" action="{{ route('admin.pengajuan_gadai.tolak', $barang->id_barang) }}" class="js-swal-tolak-pengajuan" data-title="Tolak barang ini?" data-confirm="Tolak" data-cancel="Batal">
 									@csrf
 									@method('PATCH')
+									<input type="hidden" name="alasan_penolakan" class="js-alasan-penolakan-input">
 									<button type="submit" class="button button--danger">Tolak</button>
 								</form>
 							</div>
@@ -101,4 +105,46 @@
 			<x-pagination :paginator="$barangList" />
 		</x-card>
 	</div>
+
+	@push('scripts')
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			const tolakForms = document.querySelectorAll('.js-swal-tolak-pengajuan');
+			
+			tolakForms.forEach(form => {
+				form.addEventListener('submit', function (e) {
+					e.preventDefault();
+					const title = this.dataset.title;
+					const confirmText = this.dataset.confirm;
+					const cancelText = this.dataset.cancel;
+					
+					Swal.fire({
+						title: title,
+						text: "Silakan masukkan alasan penolakan:",
+						input: 'textarea',
+						inputPlaceholder: 'Contoh: Barang cacat, Tidak memenuhi syarat...',
+						inputAttributes: {
+							'aria-label': 'Alasan penolakan'
+						},
+						showCancelButton: true,
+						confirmButtonColor: '#ef4444',
+						cancelButtonColor: '#94a3b8',
+						confirmButtonText: confirmText,
+						cancelButtonText: cancelText,
+						inputValidator: (value) => {
+							if (!value) {
+								return 'Alasan penolakan tidak boleh kosong!'
+							}
+						}
+					}).then((result) => {
+						if (result.isConfirmed) {
+							this.querySelector('.js-alasan-penolakan-input').value = result.value;
+							this.submit();
+						}
+					});
+				});
+			});
+		});
+	</script>
+	@endpush
 @endsection
