@@ -69,7 +69,7 @@
 										? $barang->foto_barang
 										: asset('storage/' . ltrim($barang->foto_barang, '/'));
 								@endphp
-								<img src="{{ $fotoBarang }}" alt="Foto {{ $barang->nama_barang }}" style="width:56px;height:56px;object-fit:cover;border-radius:14px;border:1px solid #E2E8F0;display:block;">
+								<img src="{{ $fotoBarang }}" alt="Foto {{ $barang->nama_barang }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid #E2E8F0; display: block;">
 							@else
 								<span style="color:#64748B;">-</span>
 							@endif

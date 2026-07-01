@@ -7,6 +7,7 @@ use App\Models\BarangModels;
 use App\Models\JenisBarangModels;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Cloudinary\Cloudinary;
 
 class BarangController extends Controller
 {
@@ -76,8 +77,16 @@ class BarangController extends Controller
 
         // Upload foto jika ada
         if ($request->hasFile('foto_barang')) {
-            $data['foto_barang'] = $request->file('foto_barang')
-                ->store('barang', 'public');
+            $cloudinaryUrl = env('CLOUDINARY_URL');
+            if ($cloudinaryUrl) {
+                $cloudinary = new Cloudinary($cloudinaryUrl);
+                $upload = $cloudinary->uploadApi()->upload($request->file('foto_barang')->getRealPath(), [
+                    'folder' => 'gerlian-jaya/barang'
+                ]);
+                $data['foto_barang'] = $upload['secure_url'];
+            } else {
+                $data['foto_barang'] = $request->file('foto_barang')->store('barang', 'public');
+            }
         }
 
         // Status default: pending
@@ -132,9 +141,29 @@ class BarangController extends Controller
         if ($request->hasFile('foto_barang')) {
             // Hapus foto lama jika ada
             if ($barang->foto_barang) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($barang->foto_barang);
+                if (preg_match('/^https?:\/\//', $barang->foto_barang)) {
+                    $cloudinaryUrl = env('CLOUDINARY_URL');
+                    if ($cloudinaryUrl && preg_match('/upload\/(?:v\d+\/)?([^\.]+)/', $barang->foto_barang, $matches)) {
+                        try {
+                            $cloudinary = new Cloudinary($cloudinaryUrl);
+                            $cloudinary->uploadApi()->destroy($matches[1]);
+                        } catch (\Exception $e) {}
+                    }
+                } else {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($barang->foto_barang);
+                }
             }
-            $data['foto_barang'] = $request->file('foto_barang')->store('barang', 'public');
+
+            $cloudinaryUrl = env('CLOUDINARY_URL');
+            if ($cloudinaryUrl) {
+                $cloudinary = new Cloudinary($cloudinaryUrl);
+                $upload = $cloudinary->uploadApi()->upload($request->file('foto_barang')->getRealPath(), [
+                    'folder' => 'gerlian-jaya/barang'
+                ]);
+                $data['foto_barang'] = $upload['secure_url'];
+            } else {
+                $data['foto_barang'] = $request->file('foto_barang')->store('barang', 'public');
+            }
         }
 
         $barang->update($data);
@@ -155,7 +184,17 @@ class BarangController extends Controller
 
         // Hapus foto jika ada
         if ($barang->foto_barang) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($barang->foto_barang);
+            if (preg_match('/^https?:\/\//', $barang->foto_barang)) {
+                $cloudinaryUrl = env('CLOUDINARY_URL');
+                if ($cloudinaryUrl && preg_match('/upload\/(?:v\d+\/)?([^\.]+)/', $barang->foto_barang, $matches)) {
+                    try {
+                        $cloudinary = new Cloudinary($cloudinaryUrl);
+                        $cloudinary->uploadApi()->destroy($matches[1]);
+                    } catch (\Exception $e) {}
+                }
+            } else {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($barang->foto_barang);
+            }
         }
 
         $barang->delete();

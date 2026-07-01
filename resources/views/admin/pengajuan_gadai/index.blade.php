@@ -41,7 +41,18 @@
 			<x-table :headers="['Foto', 'Nama Barang', 'Jenis', 'Harga', 'Status', 'Aksi']">
 				@forelse ($barangList as $barang)
 					<tr>
-						<td>{{ $barang->foto_barang ?: '-' }}</td>
+						<td>
+							@if ($barang->foto_barang)
+								@php
+									$fotoBarang = preg_match('/^https?:\/\//', $barang->foto_barang)
+										? $barang->foto_barang
+										: asset('storage/' . ltrim($barang->foto_barang, '/'));
+								@endphp
+								<img src="{{ $fotoBarang }}" alt="Foto" style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid #E2E8F0;">
+							@else
+								<span style="color:#94a3b8; font-style:italic;">Tidak ada</span>
+							@endif
+						</td>
 						<td>
 							<div style="font-weight:600;color:#0F172A;">{{ $barang->nama_barang }}</div>
 							<div style="font-size:12px;color:#64748B;">{{ $barang->keterangan ?: '-' }}</div>
