@@ -51,55 +51,86 @@
 					</div>
 				</div>
 
-				<div class="barang-detail-qr">
-					<div class="barang-detail-qr__box">
-						{!! QrCode::size(190)->margin(1)->generate(route('public.surat_gadai', $barang)) !!}
-					</div>
-					<div class="barang-detail-qr__text">
-						QR ini berisi link Bukti Gadai digital untuk discan oleh Pelanggan.
-					</div>
-					<div class="barang-detail-qr__url">{{ route('public.surat_gadai', $barang) }}</div>
-				</div>
+				@if(!in_array($statusValue, ['pending', 'ditolak']))
+                    <div class="barang-detail-qr">
+                        <div class="barang-detail-qr__box">
+                            {!! QrCode::size(190)->margin(1)->generate(route('public.surat_gadai', $barang)) !!}
+                        </div>
+                        <div class="barang-detail-qr__text">
+                            QR ini berisi link Bukti Gadai digital untuk discan oleh Pelanggan.
+                        </div>
+                        <div class="barang-detail-qr__url">{{ route('public.surat_gadai', $barang) }}</div>
+                    </div>
+                @endif
 			</x-card>
 
-			<x-card>
-				<div class="barang-detail-list">
-					<div class="barang-detail-item">
-						<span class="barang-detail-item__label">ID Barang</span>
-						<span class="barang-detail-item__value">{{ $barang->id_barang }}</span>
-					</div>
+			<div style="display: flex; flex-direction: column; gap: 24px;">
+                <x-card>
+                    <h3 style="font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <i class="bi bi-person-badge"></i> Data Pemilik Barang
+                    </h3>
+                    <div class="barang-detail-list">
+                        <div class="barang-detail-item">
+                            <span class="barang-detail-item__label">Nama Lengkap</span>
+                            <span class="barang-detail-item__value">{{ $barang->pelanggan->nama ?? '-' }}</span>
+                        </div>
+                        <div class="barang-detail-item">
+                            <span class="barang-detail-item__label">No KTP / NIK</span>
+                            <span class="barang-detail-item__value">{{ $barang->pelanggan->no_ktp ?? '-' }}</span>
+                        </div>
+                        <div class="barang-detail-item">
+                            <span class="barang-detail-item__label">No Handphone</span>
+                            <span class="barang-detail-item__value">{{ $barang->pelanggan->no_hp ?? '-' }}</span>
+                        </div>
+                        <div class="barang-detail-item barang-detail-item--full">
+                            <span class="barang-detail-item__label">Alamat</span>
+                            <span class="barang-detail-item__value">{{ $barang->pelanggan->alamat ?? '-' }}</span>
+                        </div>
+                    </div>
+                </x-card>
 
-					<div class="barang-detail-item">
-						<span class="barang-detail-item__label">Jenis Barang</span>
-						<span class="barang-detail-item__value">{{ $barang->jenisBarang->nama_jenis ?? '-' }}</span>
-					</div>
+                <x-card>
+                    <h3 style="font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <i class="bi bi-box-seam"></i> Data Barang
+                    </h3>
+                    <div class="barang-detail-list">
+                        <div class="barang-detail-item">
+                            <span class="barang-detail-item__label">ID Barang</span>
+                            <span class="barang-detail-item__value">{{ $barang->id_barang }}</span>
+                        </div>
 
-					<div class="barang-detail-item">
-						<span class="barang-detail-item__label">Harga Beli</span>
-						<span class="barang-detail-item__value">Rp {{ number_format($barang->harga_beli, 0, ',', '.') }}</span>
-					</div>
+                        <div class="barang-detail-item">
+                            <span class="barang-detail-item__label">Jenis Barang</span>
+                            <span class="barang-detail-item__value">{{ $barang->jenisBarang->nama_jenis ?? '-' }}</span>
+                        </div>
 
-					<div class="barang-detail-item">
-						<span class="barang-detail-item__label">Kondisi</span>
-						<span class="barang-detail-item__value">{{ $barang->kondisi ?: '-' }}</span>
-					</div>
+                        <div class="barang-detail-item">
+                            <span class="barang-detail-item__label">Harga Beli</span>
+                            <span class="barang-detail-item__value">Rp {{ number_format($barang->harga_beli, 0, ',', '.') }}</span>
+                        </div>
 
-					<div class="barang-detail-item">
-						<span class="barang-detail-item__label">Berat</span>
-						<span class="barang-detail-item__value">{{ $barang->berat ?: '-' }}</span>
-					</div>
+                        <div class="barang-detail-item">
+                            <span class="barang-detail-item__label">Kondisi</span>
+                            <span class="barang-detail-item__value">{{ $barang->kondisi ?: '-' }}</span>
+                        </div>
 
-					<div class="barang-detail-item">
-						<span class="barang-detail-item__label">Status Verifikasi</span>
-						<span class="{{ $statusClass }}">{{ $statusLabel }}</span>
-					</div>
+                        <div class="barang-detail-item">
+                            <span class="barang-detail-item__label">Berat</span>
+                            <span class="barang-detail-item__value">{{ $barang->berat ?: '-' }}</span>
+                        </div>
 
-					<div class="barang-detail-item barang-detail-item--full">
-						<span class="barang-detail-item__label">Keterangan</span>
-						<span class="barang-detail-item__value">{{ $barang->keterangan ?: '-' }}</span>
-					</div>
-				</div>
-			</x-card>
+                        <div class="barang-detail-item">
+                            <span class="barang-detail-item__label">Status Verifikasi</span>
+                            <span class="{{ $statusClass }}">{{ $statusLabel }}</span>
+                        </div>
+
+                        <div class="barang-detail-item barang-detail-item--full">
+                            <span class="barang-detail-item__label">Keterangan</span>
+                            <span class="barang-detail-item__value">{{ $barang->keterangan ?: '-' }}</span>
+                        </div>
+                    </div>
+                </x-card>
+            </div>
 		</div>
 	</div>
 @endsection{{-- admin barang show --}}

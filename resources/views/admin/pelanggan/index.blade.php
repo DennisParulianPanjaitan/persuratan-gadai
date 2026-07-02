@@ -24,15 +24,10 @@
 					</div>
 				</div>
 
-				<div class="filter-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
-					<label class="filter-field">
-						<span class="filter-field__label">Tanggal</span>
-						<input type="date" name="tanggal" value="{{ request('tanggal') }}" class="filter-input">
-					</label>
-
+				<div class="filter-grid" style="max-width: 2000px;">
 					<div class="filter-field filter-field--search">
 						<span class="filter-field__label">Pencarian</span>
-						<x-search name="search" value="{{ request('search') }}" placeholder="Cari pelanggan..." />
+						<x-search name="search" value="{{ request('search') }}" placeholder="Cari pelanggan..." autocomplete="off" />
 					</div>
 				</div>
 			</form>
@@ -76,4 +71,51 @@
 			<x-pagination :paginator="$pelangganList" />
 		</x-card>
 	</div>
+
+	@push('scripts')
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const searchInput = document.querySelector('input[name="search"]');
+			let timer;
+			
+			if (searchInput) {
+				searchInput.addEventListener('input', function() {
+					clearTimeout(timer);
+					timer = setTimeout(() => {
+						const url = new URL(window.location.href);
+						url.searchParams.set('search', searchInput.value);
+						
+						// Update browser URL without reloading
+						window.history.pushState({}, '', url);
+						
+						fetch(url, {
+							headers: {
+								'X-Requested-With': 'XMLHttpRequest'
+							}
+						})
+						.then(response => response.text())
+						.then(html => {
+							const parser = new DOMParser();
+							const doc = parser.parseFromString(html, 'text/html');
+							
+							// Replace tbody
+							const currentTableBody = document.querySelector('.table-responsive tbody');
+							const newTableBody = doc.querySelector('.table-responsive tbody');
+							if (currentTableBody && newTableBody) {
+								currentTableBody.innerHTML = newTableBody.innerHTML;
+							}
+							
+							// Replace pagination if any
+							const currentPagination = document.querySelector('nav[role="navigation"]')?.parentElement;
+							const newPagination = doc.querySelector('nav[role="navigation"]')?.parentElement;
+							if (currentPagination && newPagination) {
+							    currentPagination.innerHTML = newPagination.innerHTML;
+							}
+						});
+					}, 300);
+				});
+			}
+		});
+	</script>
+	@endpush
 @endsection

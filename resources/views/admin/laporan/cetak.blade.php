@@ -115,12 +115,12 @@
         <span style="font-size: 14px; font-weight: normal;">Periode: {{ \Carbon\Carbon::parse($startDate)->format('d M Y') }} - {{ \Carbon\Carbon::parse($endDate)->format('d M Y') }}</span>
     </div>
 
-    <div class="summary-box">
+    <div class="summary-box" style="padding: 10px; margin-bottom: 25px;">
         <table>
             <tr>
-                <td width="30%">Total Pengeluaran (Gadai Baru)</td>
-                <td width="5%">:</td>
-                <td width="65%">Rp {{ number_format($data['summary']['total_pengeluaran'], 0, ',', '.') }}</td>
+                <td width="45%">Total Pengeluaran (Gadai Baru)</td>
+                <td width="2%">:</td>
+                <td width="53%">Rp {{ number_format($data['summary']['total_pengeluaran'], 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td>Total Pemasukan (Tebus + Bunga + Lelang)</td>

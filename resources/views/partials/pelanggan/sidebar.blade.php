@@ -38,7 +38,7 @@
 
         <i class="bi bi-file-earmark-plus"></i>
 
-        <span>Pengajuan Gadai</span>
+        <span>Pengajuan Gadai Baru</span>
 
     </a>
 

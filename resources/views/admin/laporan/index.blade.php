@@ -8,7 +8,7 @@
 		/>
 
 		<x-card>
-			<form method="GET" action="{{ route('admin.laporan') }}" class="table-toolbar" style="align-items: flex-end; padding: 24px 24px 0 24px;">
+			<form method="GET" action="{{ route('admin.laporan') }}" class="table-toolbar" style="align-items: flex-end; padding: 24px; border-bottom: 1px solid #E2E8F0;">
 				<div style="display: flex; gap: 15px; align-items: flex-end;">
 					<label class="filter-field">
 						<span class="filter-field__label">Dari Tanggal</span>
@@ -34,22 +34,22 @@
                 <div style="font-size: 18px; font-weight: 700; color: #0F172A; margin-bottom: 20px;">Ringkasan Keuangan ({{ \Carbon\Carbon::parse($startDate)->format('d M Y') }} - {{ \Carbon\Carbon::parse($endDate)->format('d M Y') }})</div>
                 
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px;">
-                    <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px;">
-                        <div style="font-size: 14px; color: #64748B; font-weight: 600; margin-bottom: 8px;">Total Pengeluaran (Gadai Baru)</div>
-                        <div style="font-size: 24px; font-weight: 700; color: #E11D48;">Rp {{ number_format($data['summary']['total_pengeluaran'], 0, ',', '.') }}</div>
+                    <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px;">
+                        <div style="font-size: 13px; color: #64748B; font-weight: 600; margin-bottom: 6px;">Total Pengeluaran (Gadai Baru)</div>
+                        <div style="font-size: 20px; font-weight: 700; color: #E11D48;">Rp {{ number_format($data['summary']['total_pengeluaran'], 0, ',', '.') }}</div>
                     </div>
                     
-                    <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px;">
-                        <div style="font-size: 14px; color: #64748B; font-weight: 600; margin-bottom: 8px;">Total Pemasukan (Tebus, Bunga, Lelang)</div>
-                        <div style="font-size: 24px; font-weight: 700; color: #059669;">Rp {{ number_format($data['summary']['total_pemasukan'], 0, ',', '.') }}</div>
+                    <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px;">
+                        <div style="font-size: 13px; color: #64748B; font-weight: 600; margin-bottom: 6px;">Total Pemasukan (Tebus, Bunga, Lelang)</div>
+                        <div style="font-size: 20px; font-weight: 700; color: #059669;">Rp {{ number_format($data['summary']['total_pemasukan'], 0, ',', '.') }}</div>
                     </div>
                     
-                    <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px;">
-                        <div style="font-size: 14px; color: #64748B; font-weight: 600; margin-bottom: 8px;">Arus Kas Bersih (Laba/Rugi)</div>
+                    <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px;">
+                        <div style="font-size: 13px; color: #64748B; font-weight: 600; margin-bottom: 6px;">Arus Kas Bersih (Laba/Rugi)</div>
                         @if($data['summary']['arus_kas'] >= 0)
-                            <div style="font-size: 24px; font-weight: 700; color: #0ea5e9;">+ Rp {{ number_format($data['summary']['arus_kas'], 0, ',', '.') }}</div>
+                            <div style="font-size: 20px; font-weight: 700; color: #0ea5e9;">+ Rp {{ number_format($data['summary']['arus_kas'], 0, ',', '.') }}</div>
                         @else
-                            <div style="font-size: 24px; font-weight: 700; color: #E11D48;">- Rp {{ number_format(abs($data['summary']['arus_kas']), 0, ',', '.') }}</div>
+                            <div style="font-size: 20px; font-weight: 700; color: #E11D48;">- Rp {{ number_format(abs($data['summary']['arus_kas']), 0, ',', '.') }}</div>
                         @endif
                     </div>
                 </div>

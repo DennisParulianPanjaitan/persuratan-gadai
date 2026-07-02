@@ -69,7 +69,7 @@
 						</td>
 						<td>
 							<div style="display:flex;flex-wrap:wrap;gap:8px;">
-								<x-button href="{{ route('admin.barang.show', $barang) }}" variant="secondary">Lihat</x-button>
+								<x-button href="{{ route('admin.pengajuan_gadai.show', $barang) }}" variant="secondary">Lihat</x-button>
 								<form method="POST"
 								      action="{{ route('admin.pengajuan_gadai.terima', $barang->id_barang) }}"
 								      class="js-swal-confirm-price"

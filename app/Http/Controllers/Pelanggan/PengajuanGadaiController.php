@@ -25,6 +25,7 @@ class PengajuanGadaiController extends Controller
             'nama_barang'     => 'required|string|max:255',
             'harga_beli'      => 'required|numeric|min:0',
             'kondisi'         => 'required|string|max:100',
+            'berat'           => 'required|numeric|min:0',
             'foto_barang'     => 'required|image|mimes:jpeg,png,webp|max:2048',
             'keterangan'      => 'nullable|string|max:1000',
         ], [
@@ -46,7 +47,7 @@ class PengajuanGadaiController extends Controller
 
         $data = $request->only([
             'id_jenis_barang', 'nama_barang', 'harga_beli',
-            'kondisi', 'keterangan'
+            'kondisi', 'berat', 'keterangan'
         ]);
 
         $data['id_pelanggan'] = $pelanggan->id_pelanggan;

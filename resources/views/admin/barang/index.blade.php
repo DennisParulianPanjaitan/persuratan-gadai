@@ -23,13 +23,13 @@
 					</div>
 				</div>
 
-				<div class="filter-grid">
-					<label class="filter-field">
+				<div class="filter-grid" style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end;">
+					<label class="filter-field" style="max-width: 180px;">
 						<span class="filter-field__label">Tanggal</span>
-						<input type="date" name="tanggal" value="{{ request('tanggal') }}" class="filter-input">
+						<input type="date" name="tanggal" value="{{ request('tanggal') }}" class="filter-input" onclick="this.showPicker()" style="cursor: pointer;">
 					</label>
 
-					<label class="filter-field">
+					<label class="filter-field" style="max-width: 250px;">
 						<span class="filter-field__label">Jenis Barang</span>
 						<select name="jenis_barang" class="filter-input">
 							<option value="">Semua Jenis</option>
@@ -41,7 +41,7 @@
 						</select>
 					</label>
 
-					<label class="filter-field">
+					<label class="filter-field" style="max-width: 250px;">
 						<span class="filter-field__label">Status</span>
 						<select name="status" class="filter-input">
 							<option value="">Semua Status</option>
@@ -51,9 +51,9 @@
 						</select>
 					</label>
 
-					<div class="filter-field filter-field--search">
+					<div class="filter-field filter-field--search" style="flex: 1; min-width: 200px;">
 						<span class="filter-field__label">Pencarian</span>
-						<x-search name="search" value="{{ request('search') }}" placeholder="Cari barang..." />
+						<x-search name="search" value="{{ request('search') }}" placeholder="Cari barang..." autocomplete="off" />
 					</div>
 				</div>
 			</form>
@@ -118,4 +118,47 @@
 			<x-pagination :paginator="$barangList" />
 		</x-card>
 	</div>
+
+	@push('scripts')
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const searchInput = document.querySelector('input[name="search"]');
+			const tanggalFilter = document.querySelector('input[name="tanggal"]');
+			const jenisFilter = document.querySelector('select[name="jenis_barang"]');
+			const statusFilter = document.querySelector('select[name="status"]');
+			let timer;
+			
+			function doSearch() {
+				clearTimeout(timer);
+				timer = setTimeout(() => {
+					const url = new URL(window.location.href);
+					if (searchInput) url.searchParams.set('search', searchInput.value);
+					if (tanggalFilter) url.searchParams.set('tanggal', tanggalFilter.value);
+					if (jenisFilter) url.searchParams.set('jenis_barang', jenisFilter.value);
+					if (statusFilter) url.searchParams.set('status', statusFilter.value);
+					
+					window.history.pushState({}, '', url);
+					
+					fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+					.then(res => res.text())
+					.then(html => {
+						const doc = new DOMParser().parseFromString(html, 'text/html');
+						const currentBody = document.querySelector('.table-responsive tbody');
+						const newBody = doc.querySelector('.table-responsive tbody');
+						if (currentBody && newBody) currentBody.innerHTML = newBody.innerHTML;
+						
+						const currentPagination = document.querySelector('nav[role="navigation"]')?.parentElement;
+						const newPagination = doc.querySelector('nav[role="navigation"]')?.parentElement;
+						if (currentPagination && newPagination) currentPagination.innerHTML = newPagination.innerHTML;
+					});
+				}, 300);
+			}
+
+			if (searchInput) searchInput.addEventListener('input', doSearch);
+			if (tanggalFilter) tanggalFilter.addEventListener('change', doSearch);
+			if (jenisFilter) jenisFilter.addEventListener('change', doSearch);
+			if (statusFilter) statusFilter.addEventListener('change', doSearch);
+		});
+	</script>
+	@endpush
 @endsection

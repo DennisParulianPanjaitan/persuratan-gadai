@@ -99,7 +99,7 @@
                     </div>
                     <a href="{{ route('admin.transaksi_gadai.index') }}" class="dash-card-action">Lihat Semua</a>
                 </div>
-                <div class="dash-card-body p-0">
+                <div class="dash-card-body p-0" style="height: 600px; overflow-y: auto;">
                     <div class="table-responsive">
                         <table class="dash-table">
                             <thead>
@@ -149,6 +149,33 @@
                 </div>
             </div>
 
+            <!-- Grafik Transaksi Bulanan -->
+            <div class="dash-card">
+                <div class="dash-card-header">
+                    <div class="dash-card-title">
+                        <div class="dash-card-icon bg-purple-100 text-purple-600"><i class="bi bi-bar-chart-fill"></i></div>
+                        Grafik Transaksi Bulanan
+                    </div>
+                    <div class="dash-card-filter">
+                        <form action="{{ route('admin.dashboard') }}" method="GET" id="chartFilterForm">
+                            <select name="range" onchange="showLoadingAndSubmit(this)" class="form-select text-sm border-slate-200 rounded-lg text-slate-600 focus:ring-primary focus:border-primary">
+                                <option value="3" {{ $range == 3 ? 'selected' : '' }}>3 Bulan Terakhir</option>
+                                <option value="6" {{ $range == 6 ? 'selected' : '' }}>6 Bulan Terakhir</option>
+                                <option value="12" {{ $range == 12 ? 'selected' : '' }}>12 Bulan Terakhir</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+                <div class="dash-card-body" id="chartContainer" style="position: relative; height: 600px;">
+                    <canvas id="transactionChart" style="width: 100%; height: 100%;"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="dashboard-right">
+            
             <!-- Aktivitas Transaksi Terbaru -->
             <div class="dash-card">
                 <div class="dash-card-header">
@@ -158,7 +185,7 @@
                     </div>
                     <a href="{{ route('admin.laporan') }}" class="dash-card-action">Lihat Semua Aktivitas</a>
                 </div>
-                <div class="dash-card-body p-0">
+                <div class="dash-card-body p-0" style="height: 600px; overflow-y: auto;">
                     <div class="table-responsive">
                         <table class="dash-table">
                             <thead>
@@ -193,33 +220,6 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- RIGHT COLUMN -->
-        <div class="dashboard-right">
-            
-            <!-- Grafik Transaksi Bulanan -->
-            <div class="dash-card h-full">
-                <div class="dash-card-header">
-                    <div class="dash-card-title">
-                        <div class="dash-card-icon bg-purple-100 text-purple-600"><i class="bi bi-bar-chart-fill"></i></div>
-                        Grafik Transaksi Bulanan
-                    </div>
-                    <div class="dash-card-filter">
-                        <form action="{{ route('admin.dashboard') }}" method="GET">
-                            <select name="range" onchange="this.form.submit()" class="form-select text-sm border-slate-200 rounded-lg text-slate-600 focus:ring-primary focus:border-primary">
-                                <option value="3" {{ $range == 3 ? 'selected' : '' }}>3 Bulan Terakhir</option>
-                                <option value="6" {{ $range == 6 ? 'selected' : '' }}>6 Bulan Terakhir</option>
-                                <option value="12" {{ $range == 12 ? 'selected' : '' }}>12 Bulan Terakhir</option>
-                            </select>
-                        </form>
-                    </div>
-                </div>
-                <div class="dash-card-body">
-                    <canvas id="transactionChart" style="min-height: 300px; width: 100%;"></canvas>
                 </div>
             </div>
 
@@ -261,18 +261,18 @@
     .stat-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
-        margin-bottom: 24px;
+        gap: 16px;
+        margin-bottom: 16px;
     }
 
     .stat-card {
         background: #fff;
         border: 1px solid #F1F5F9;
-        border-radius: 20px;
-        padding: 24px;
+        border-radius: 16px;
+        padding: 16px;
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 12px;
         box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.05);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
@@ -283,13 +283,13 @@
     }
 
     .stat-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 16px;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
+        font-size: 20px;
         flex-shrink: 0;
     }
 
@@ -311,7 +311,7 @@
     }
 
     .stat-value {
-        font-size: 24px;
+        font-size: 20px;
         font-weight: 700;
         color: #0F172A;
         line-height: 1.2;
@@ -345,7 +345,7 @@
     .dash-card {
         background: #fff;
         border: 1px solid #F1F5F9;
-        border-radius: 20px;
+        border-radius: 16px;
         box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.04);
         display: flex;
         flex-direction: column;
@@ -356,7 +356,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 20px 24px;
+        padding: 16px 20px;
         border-bottom: 1px solid #F1F5F9;
     }
 
@@ -392,7 +392,7 @@
     }
 
     .dash-card-body {
-        padding: 24px;
+        padding: 16px;
         flex: 1;
     }
 
@@ -514,10 +514,10 @@
                         labels: {
                             usePointStyle: true,
                             boxWidth: 8,
-                            padding: 20,
+                            padding: 12,
                             font: {
                                 family: "'Poppins', sans-serif",
-                                size: 12,
+                                size: 11,
                                 weight: 500
                             },
                             color: '#64748B'
@@ -525,16 +525,16 @@
                     },
                     tooltip: {
                         backgroundColor: '#0F172A',
-                        padding: 12,
+                        padding: 10,
                         titleFont: {
                             family: "'Poppins', sans-serif",
-                            size: 13
+                            size: 12
                         },
                         bodyFont: {
                             family: "'Poppins', sans-serif",
-                            size: 13
+                            size: 12
                         },
-                        cornerRadius: 8,
+                        cornerRadius: 6,
                         displayColors: true
                     }
                 },
@@ -557,7 +557,10 @@
                             drawBorder: false
                         },
                         ticks: {
-                            font: { family: "'Poppins', sans-serif", size: 12 },
+                            maxRotation: 0,
+                            minRotation: 0,
+                            autoSkip: true,
+                            font: { family: "'Poppins', sans-serif", size: 10 },
                             color: '#64748B'
                         }
                     }
@@ -569,5 +572,24 @@
             }
         });
     });
+    function showLoadingAndSubmit(selectElement) {
+        // Show loading spinner over chart container
+        const chartContainer = document.getElementById('chartContainer');
+        const loader = document.createElement('div');
+        loader.innerHTML = '<div style="position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.7); display:flex; align-items:center; justify-content:center; z-index:10; border-radius: 8px;"><div style="width: 3rem; height: 3rem; border: .3em solid #4F46E5; border-right-color: transparent; border-radius: 50%; animation: spinner-border .75s linear infinite;"></div></div>';
+        chartContainer.appendChild(loader);
+        
+        // Prevent multiple submissions
+        selectElement.style.pointerEvents = 'none';
+        selectElement.style.opacity = '0.7';
+        
+        // Submit
+        document.getElementById('chartFilterForm').submit();
+    }
 </script>
+<style>
+    @keyframes spinner-border {
+        to { transform: rotate(360deg); }
+    }
+</style>
 @endpush

@@ -9,7 +9,7 @@ class PublicSuratGadaiController extends Controller
 {
     public function show(BarangModels $barang)
     {
-        $barang->load(['jenisBarang']);
+        $barang->load(['jenisBarang', 'pelanggan']);
         $transaksi = \App\Models\TransaksiGadaiModels::with(['pelanggan', 'user'])
             ->where('id_barang', $barang->id_barang)
             ->latest()

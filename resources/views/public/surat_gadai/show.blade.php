@@ -156,9 +156,10 @@
 
         .field-group {
             display: flex;
+            align-items: flex-start;
             margin-bottom: 12px;
             font-size: 14px;
-            line-height: 1.6;
+            line-height: 24px;
         }
 
         .field-label {
@@ -169,14 +170,17 @@
 
         .field-separator {
             width: 20px;
+            flex-shrink: 0;
         }
 
         .field-value {
             flex-grow: 1;
-            border-bottom: 1px dotted #9ca3af;
             font-family: 'Courier Prime', monospace;
             font-weight: 700;
             color: #1f2937;
+            /* Dotted line that repeats for every line of text */
+            background-image: radial-gradient(circle at 3px 23px, #9ca3af 1px, transparent 1px);
+            background-size: 6px 24px;
         }
 
         .jatuh-tempo-box {
@@ -329,12 +333,16 @@
                 $namaPelanggan = '-';
                 if ($transaksi && $transaksi->pelanggan) {
                     $namaPelanggan = $transaksi->pelanggan->nama;
+                } elseif ($barang->pelanggan) {
+                    $namaPelanggan = $barang->pelanggan->nama;
                 }
 
                 // Tentukan alamat
                 $alamatPelanggan = '-';
                 if ($transaksi && $transaksi->pelanggan) {
                     $alamatPelanggan = $transaksi->pelanggan->alamat;
+                } elseif ($barang->pelanggan) {
+                    $alamatPelanggan = $barang->pelanggan->alamat;
                 }
 
                 // Tentukan Tanggal Masuk

@@ -177,11 +177,14 @@
 @section('content')
 
 <div class="filter-tabs">
-    <a href="{{ route('pelanggan.riwayat.index') }}" class="filter-tab {{ !request('status') ? 'active' : '' }}">Semua</a>
-    <a href="{{ route('pelanggan.riwayat.index', ['status' => 'pending']) }}" class="filter-tab {{ request('status') == 'pending' ? 'active' : '' }}">Sedang Ditinjau</a>
-    <a href="{{ route('pelanggan.riwayat.index', ['status' => 'aktif']) }}" class="filter-tab {{ request('status') == 'aktif' ? 'active' : '' }}">Gadai Aktif</a>
-    <a href="{{ route('pelanggan.riwayat.index', ['status' => 'ditebus']) }}" class="filter-tab {{ request('status') == 'ditebus' ? 'active' : '' }}">Selesai (Ditebus)</a>
-    <a href="{{ route('pelanggan.riwayat.index', ['status' => 'dijual']) }}" class="filter-tab {{ request('status') == 'dijual' ? 'active' : '' }}">Dilelang (Hangus)</a>
+    <a href="{{ route('pelanggan.riwayat.index') }}" class="filter-tab {{ !request('status') ? 'active' : '' }}">Semua ({{ $counts['semua'] ?? 0 }})</a>
+    <a href="{{ route('pelanggan.riwayat.index', ['status' => 'pending']) }}" class="filter-tab {{ request('status') == 'pending' ? 'active' : '' }}">Sedang Ditinjau ({{ $counts['pending'] ?? 0 }})</a>
+    <a href="{{ route('pelanggan.riwayat.index', ['status' => 'diterima']) }}" class="filter-tab {{ request('status') == 'diterima' ? 'active' : '' }}">Diterima ({{ $counts['diterima'] ?? 0 }})</a>
+    <a href="{{ route('pelanggan.riwayat.index', ['status' => 'gadai']) }}" class="filter-tab {{ request('status') == 'gadai' ? 'active' : '' }}">Gadai ({{ $counts['gadai'] ?? 0 }})</a>
+    <a href="{{ route('pelanggan.riwayat.index', ['status' => 'ditolak']) }}" class="filter-tab {{ request('status') == 'ditolak' ? 'active' : '' }}">Ditolak ({{ $counts['ditolak'] ?? 0 }})</a>
+    <a href="{{ route('pelanggan.riwayat.index', ['status' => 'ditebus']) }}" class="filter-tab {{ request('status') == 'ditebus' ? 'active' : '' }}">Ditebus ({{ $counts['ditebus'] ?? 0 }})</a>
+    <a href="{{ route('pelanggan.riwayat.index', ['status' => 'dijual']) }}" class="filter-tab {{ request('status') == 'dijual' ? 'active' : '' }}">Dijual ({{ $counts['dijual'] ?? 0 }})</a>
+    <a href="{{ route('pelanggan.riwayat.index', ['status' => 'jatuh_tempo']) }}" class="filter-tab {{ request('status') == 'jatuh_tempo' ? 'active' : '' }}">Jatuh Tempo ({{ $counts['jatuh_tempo'] ?? 0 }})</a>
 </div>
 
 @forelse($barangList as $barang)
@@ -189,21 +192,35 @@
         $transaksi = $barang->transaksiGadai->first();
         
         // Tentukan Status Final
+        $status = '';
         if ($transaksi) {
-            $status = $transaksi->status; // aktif, ditebus, dijual
+            if ($transaksi->status === 'aktif') {
+                $jtDate = \Carbon\Carbon::parse($transaksi->tanggal_jatuh_tempo)->startOfDay();
+                if ($jtDate < now()->startOfDay()) {
+                    $status = 'jatuh_tempo';
+                } else {
+                    $status = 'gadai';
+                }
+            } else {
+                $status = $transaksi->status; // ditebus, dijual
+            }
         } else {
             $status = $barang->status_verifikasi; // pending, terverifikasi, ditolak
+            if ($status === 'terverifikasi') {
+                $status = 'diterima';
+            }
         }
 
         // Setup Tampilan Badge
         $badgeClass = '';
         $badgeText = '';
         if ($status == 'pending') { $badgeClass = 'badge-pending'; $badgeText = 'Sedang Ditinjau'; }
-        elseif ($status == 'terverifikasi') { $badgeClass = 'badge-terverifikasi'; $badgeText = 'Ke Toko Sekarang'; }
+        elseif ($status == 'diterima') { $badgeClass = 'badge-terverifikasi'; $badgeText = 'Diterima belum masuk gadai'; }
         elseif ($status == 'ditolak') { $badgeClass = 'badge-ditolak'; $badgeText = 'Ditolak'; }
-        elseif ($status == 'aktif') { $badgeClass = 'badge-aktif'; $badgeText = 'Gadai Aktif'; }
-        elseif ($status == 'ditebus') { $badgeClass = 'badge-ditebus'; $badgeText = 'Telah Ditebus'; }
-        elseif ($status == 'dijual') { $badgeClass = 'badge-dijual'; $badgeText = 'Hangus / Dilelang'; }
+        elseif ($status == 'gadai') { $badgeClass = 'badge-aktif'; $badgeText = 'Gadai'; }
+        elseif ($status == 'jatuh_tempo') { $badgeClass = 'badge-ditolak'; $badgeText = 'Jatuh Tempo'; }
+        elseif ($status == 'ditebus') { $badgeClass = 'badge-ditebus'; $badgeText = 'Ditebus'; }
+        elseif ($status == 'dijual') { $badgeClass = 'badge-dijual'; $badgeText = 'Dijual'; }
 
         // Setup Foto
         $fotoBarang = $barang->foto_barang ? (preg_match('/^https?:\/\//', $barang->foto_barang) ? $barang->foto_barang : asset('storage/' . ltrim($barang->foto_barang, '/'))) : null;
@@ -251,14 +268,14 @@
                                 $diff = $now->diffInDays($jtStart, false);
                                 
                                 $jtColor = '#334155';
-                                if($status == 'aktif') {
+                                if(in_array($status, ['gadai', 'jatuh_tempo'])) {
                                     if($diff < 0) $jtColor = '#ef4444';
                                     elseif($diff <= 7) $jtColor = '#f97316';
                                 }
                             @endphp
                             <span class="hc-value" style="color: {{ $jtColor }};">{{ $jt->translatedFormat('d M Y') }}</span>
                         </div>
-                        @if($status == 'aktif')
+                        @if(in_array($status, ['gadai', 'jatuh_tempo']))
                             @php
                                 $tglGadai = \Carbon\Carbon::parse($transaksi->tanggal_gadai)->startOfDay();
                                 $hariBerjalan = $tglGadai->diffInDays($now);
@@ -302,7 +319,7 @@
                             <span class="hc-label">Kondisi</span>
                             <span class="hc-value">{{ $barang->kondisi }}</span>
                         </div>
-                        @if($status == 'terverifikasi' && $barang->harga_gadai_sementara)
+                        @if($status == 'diterima' && $barang->harga_gadai_sementara)
                             <div class="hc-grid-item">
                                 <span class="hc-label" style="color: #1d4ed8;">Penawaran Gadai</span>
                                 <span class="hc-value" style="color: #1d4ed8;">Rp {{ number_format($barang->harga_gadai_sementara, 0, ',', '.') }}</span>
@@ -314,17 +331,17 @@
         </div>
 
         {{-- Area Arahan & Aksi --}}
-        <div class="hc-footer" style="background: {{ in_array($status, ['pending', 'terverifikasi']) ? '#eff6ff' : (in_array($status, ['aktif', 'ditebus']) ? '#f8fafc' : '#fef2f2') }};">
+        <div class="hc-footer" style="background: {{ in_array($status, ['pending', 'diterima']) ? '#eff6ff' : (in_array($status, ['gadai', 'jatuh_tempo', 'ditebus']) ? '#f8fafc' : '#fef2f2') }};">
             {{-- Pesan Arahan --}}
-            <div class="hc-footer-text" style="color: {{ in_array($status, ['pending', 'terverifikasi']) ? '#1d4ed8' : (in_array($status, ['aktif', 'ditebus']) ? '#334155' : '#b91c1c') }};">
+            <div class="hc-footer-text" style="color: {{ in_array($status, ['pending', 'diterima']) ? '#1d4ed8' : (in_array($status, ['gadai', 'jatuh_tempo', 'ditebus']) ? '#334155' : '#b91c1c') }};">
                 @if($status == 'pending')
                     <i class="bi bi-hourglass-split"></i> Pengajuan Anda sedang ditinjau oleh tim Admin. Harap bersabar menunggu hasil verifikasi.
-                @elseif($status == 'terverifikasi')
+                @elseif($status == 'diterima')
                     <i class="bi bi-info-circle-fill"></i> <strong>Pengajuan Disetujui!</strong> Silakan datang ke kantor pegadaian membawa barang fisik. Tunjukkan QR Code pada halaman Detail ke Admin.
                 @elseif($status == 'ditolak')
                     <i class="bi bi-x-circle-fill"></i> Mohon maaf, pengajuan barang ini tidak dapat kami proses saat ini.
-                @elseif($status == 'aktif')
-                    <i class="bi bi-check-circle-fill"></i> Barang sedang dalam masa gadai aktif. Perhatikan sisa waktu Anda agar barang tidak dilelang.
+                @elseif(in_array($status, ['gadai', 'jatuh_tempo']))
+                    <i class="bi bi-check-circle-fill"></i> Barang sedang dalam masa gadai. Perhatikan sisa waktu Anda agar barang tidak dilelang.
                 @elseif($status == 'ditebus')
                     <i class="bi bi-box-seam"></i> Transaksi selesai. Barang Anda telah berhasil diambil kembali.
                 @elseif($status == 'dijual')
@@ -334,17 +351,17 @@
 
             {{-- Tombol Aksi --}}
             <div class="hc-footer-actions">
-                @if(in_array($status, ['pending', 'ditolak', 'terverifikasi']))
-                    <form action="{{ route('pelanggan.riwayat.destroy', $barang->id_barang) }}" method="POST" style="margin: 0;" onsubmit="return confirm('{{ $status == 'terverifikasi' ? 'Apakah Anda yakin ingin menolak penawaran ini? Barang yang ditolak akan otomatis dihapus dari histori Anda.' : 'Yakin ingin menghapus riwayat ini?' }}');">
+                @if(in_array($status, ['pending', 'ditolak', 'diterima']))
+                    <form action="{{ route('pelanggan.riwayat.destroy', $barang->id_barang) }}" method="POST" style="margin: 0;" onsubmit="return confirm('{{ $status == 'diterima' ? 'Apakah Anda yakin ingin menolak penawaran ini? Barang yang ditolak akan otomatis dihapus dari histori Anda.' : 'Yakin ingin menghapus riwayat ini?' }}');">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn" style="background: transparent; border: 1px solid #fca5a5; color: #ef4444;">
-                            <i class="bi {{ $status == 'terverifikasi' ? 'bi-x-circle' : 'bi-trash' }}"></i> {{ $status == 'terverifikasi' ? 'Tolak Penawaran' : 'Hapus' }}
+                            <i class="bi {{ $status == 'diterima' ? 'bi-x-circle' : 'bi-trash' }}"></i> {{ $status == 'diterima' ? 'Tolak Penawaran' : 'Hapus' }}
                         </button>
                     </form>
                 @endif
 
-                @if($status == 'aktif')
+                @if(in_array($status, ['gadai', 'jatuh_tempo']))
                     <a href="#" class="btn btn-primary" onclick="alert('Fitur Perpanjangan sedang dalam pengembangan'); return false;">
                         <i class="bi bi-calendar-plus"></i> Perpanjang
                     </a>

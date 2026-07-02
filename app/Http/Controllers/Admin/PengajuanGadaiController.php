@@ -33,6 +33,11 @@ class PengajuanGadaiController extends Controller
 
         return view('admin.pengajuan_gadai.index', compact('barangList'));
     }
+    public function show($id)
+    {
+        $barang = BarangModels::with(['jenisBarang', 'pelanggan'])->findOrFail($id);
+        return view('admin.pengajuan_gadai.show', compact('barang'));
+    }
 
     public function terima(Request $request, BarangModels $barang): RedirectResponse
     {

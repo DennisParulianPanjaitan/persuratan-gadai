@@ -182,6 +182,12 @@
         </div>
 
         <div class="form-group">
+            <label class="form-label" for="berat">Berat Barang (Gram/Kg) <span style="color:#ef4444">*</span></label>
+            <input type="number" step="0.01" name="berat" id="berat" class="form-control" placeholder="Contoh: 1.5 (untuk 1.5 Kg) atau 500 (untuk 500 gram)" min="0" value="{{ old('berat') }}" required>
+            <span class="form-text">Masukkan berat dari barang yang diajukan.</span>
+        </div>
+
+        <div class="form-group">
             <label class="form-label">Foto Barang <span style="color:#ef4444">*</span></label>
             <div class="upload-area">
                 <i class="bi bi-cloud-arrow-up-fill upload-icon"></i>

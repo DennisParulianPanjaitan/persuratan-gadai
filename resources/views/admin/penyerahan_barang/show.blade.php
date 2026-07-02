@@ -109,6 +109,19 @@
 					</div>
 
 					<div style="margin-bottom: 24px; background-color: #F8FAFC; border-radius: 12px; padding: 16px; border: 1px solid #F1F5F9;">
+						<div style="font-size: 13px; color: #64748B; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Informasi Pelanggan (Pemilik)</div>
+						<div style="color: #334155; line-height: 1.6;">
+							@if($barang->pelanggan)
+								Nama: <b>{{ $barang->pelanggan->nama }}</b><br>
+								No. HP: <b>{{ $barang->pelanggan->no_hp }}</b><br>
+								Alamat: <b>{{ $barang->pelanggan->alamat ?? '-' }}</b>
+							@else
+								<span style="color: #EF4444; font-weight: 600;">Data pelanggan tidak ditemukan. (Barang ini tidak memiliki pemilik valid).</span>
+							@endif
+						</div>
+					</div>
+
+					<div style="margin-bottom: 24px; background-color: #F8FAFC; border-radius: 12px; padding: 16px; border: 1px solid #F1F5F9;">
 						<div style="font-size: 13px; color: #64748B; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Keterangan/Kondisi</div>
 						<div style="color: #334155; line-height: 1.6;">
 							Kondisi: <b>{{ $barang->kondisi ?? 'Tidak disebutkan' }}</b><br>
@@ -134,34 +147,20 @@
 								@method('PATCH')
 								
 								<div class="form-aksi-container">
-									<div style="width: 250px;">
-										<select name="id_pelanggan" id="id_pelanggan" class="form-select @error('id_pelanggan') is-invalid @enderror" required>
-											<option value="">-- Pilih Pelanggan (Pemilik) --</option>
-											@foreach($pelangganList as $p)
-												<option value="{{ $p->id_pelanggan }}" @selected(old('id_pelanggan') == $p->id_pelanggan)>
-													{{ $p->nama }} ({{ $p->no_hp }})
-												</option>
-											@endforeach
-										</select>
-									</div>
-									
 									<input type="hidden" name="uang_pinjaman" id="input_uang_pinjaman">
 									<input type="hidden" name="tanggal_jatuh_tempo" id="input_tanggal_jatuh_tempo">
 
 									<button type="button" class="button button--primary btn-terima" onclick="showGadaiAlert()">Terima & Proses Transaksi</button>
 								</div>
-							</form>
-						</div>
-							@error('id_pelanggan')
-								<div style="color: #E11D48; font-size: 12px; margin-top: 4px;">{{ $message }}</div>
-							@enderror
+
 							@error('uang_pinjaman')
 								<div style="color: #E11D48; font-size: 12px; margin-top: 4px;">{{ $message }}</div>
 							@enderror
 							@error('tanggal_jatuh_tempo')
 								<div style="color: #E11D48; font-size: 12px; margin-top: 4px;">{{ $message }}</div>
 							@enderror
-						</form>
+							</form>
+						</div>
 					</div>
 
 				</div>
@@ -173,17 +172,6 @@
 @push('scripts')
 <script>
 function showGadaiAlert() {
-    // Pastikan pelanggan sudah dipilih sebelum memunculkan alert
-    if (!document.getElementById('id_pelanggan').value) {
-        Swal.fire({
-			icon: 'warning',
-			title: 'Pelanggan Belum Dipilih!',
-			text: 'Harap pilih nama pelanggan dari dropdown sebelum memproses transaksi.',
-			confirmButtonText: 'Mengerti'
-		});
-        return;
-    }
-
     // Hitung tanggal jatuh tempo (default 4 bulan dari sekarang)
     let defaultDate = new Date();
     defaultDate.setMonth(defaultDate.getMonth() + 4);

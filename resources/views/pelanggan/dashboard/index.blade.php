@@ -77,17 +77,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($transaksiGadai->take(5) as $index => $transaksi)
+                        @forelse ($barangGadai->take(5) as $index => $item)
+                            @php
+                                $transaksi = $item->transaksiGadai->first();
+                            @endphp
                             <tr style="border-top: 1px solid #f1f5f9;">
-                                <td style="padding: 16px 24px; color: #334155; font-weight: 600; font-size: 14px;">{{ $transaksi->kode_transaksi }}</td>
-                                <td style="padding: 16px 24px; color: #0f172a; font-weight: 500; font-size: 14px;">{{ $transaksi->barang->nama_barang ?? '-' }}</td>
-                                <td style="padding: 16px 24px; color: #64748b; font-size: 14px;">{{ \Carbon\Carbon::parse($transaksi->tanggal_gadai)->translatedFormat('d M Y') }}</td>
+                                <td style="padding: 16px 24px; color: #334155; font-weight: 600; font-size: 14px;">{{ $transaksi ? $transaksi->kode_transaksi : '-' }}</td>
+                                <td style="padding: 16px 24px; color: #0f172a; font-weight: 500; font-size: 14px;">{{ $item->nama_barang }}</td>
+                                <td style="padding: 16px 24px; color: #64748b; font-size: 14px;">{{ \Carbon\Carbon::parse($transaksi ? $transaksi->tanggal_gadai : $item->created_at)->translatedFormat('d M Y') }}</td>
                                 <td style="padding: 16px 24px; font-size: 14px;">
-                                    @php
-                                        $jatuhTempo = \Carbon\Carbon::parse($transaksi->tanggal_jatuh_tempo);
-                                        $isWarning = $jatuhTempo->isPast() || $jatuhTempo->diffInDays(now()) <= 7;
-                                    @endphp
-                                    @if($transaksi->status === 'aktif')
+                                    @if($transaksi && $transaksi->status === 'aktif')
+                                        @php
+                                            $jatuhTempo = \Carbon\Carbon::parse($transaksi->tanggal_jatuh_tempo);
+                                            $isWarning = $jatuhTempo->isPast() || $jatuhTempo->diffInDays(now()) <= 7;
+                                        @endphp
                                         <span style="color: {{ $isWarning ? '#ef4444' : '#64748b' }}; font-weight: {{ $isWarning ? '700' : '400' }};">
                                             {{ $jatuhTempo->translatedFormat('d M Y') }}
                                         </span>
@@ -95,9 +98,15 @@
                                         <span style="color: #cbd5e1;">-</span>
                                     @endif
                                 </td>
-                                <td style="padding: 16px 24px; color: #0f172a; font-weight: 600; font-size: 14px;">Rp {{ number_format($transaksi->uang_pinjaman, 0, ',', '.') }}</td>
+                                <td style="padding: 16px 24px; color: #0f172a; font-weight: 600; font-size: 14px;">
+                                    @if($transaksi && $transaksi->status === 'aktif')
+                                        Rp {{ number_format($transaksi->uang_pinjaman, 0, ',', '.') }}
+                                    @else
+                                        <span style="color: #cbd5e1; font-weight: 400;">-</span>
+                                    @endif
+                                </td>
                                 <td style="padding: 16px 24px; font-size: 13px; font-weight: 700;">
-                                    @if($transaksi->status === 'aktif')
+                                    @if($transaksi && $transaksi->status === 'aktif')
                                         @php
                                             $now = now()->startOfDay();
                                             $jtDate = \Carbon\Carbon::parse($transaksi->tanggal_jatuh_tempo)->startOfDay();
@@ -117,14 +126,33 @@
                                     @endif
                                 </td>
                                 <td style="padding: 16px 24px;">
-                                    @if($transaksi->status == 'aktif')
-                                        <span style="background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 700;">Aktif</span>
-                                    @elseif($transaksi->status == 'ditebus')
-                                        <span style="background: #dcfce7; color: #16a34a; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 700;">Ditebus</span>
-                                    @elseif($transaksi->status == 'dijual')
-                                        <span style="background: #fee2e2; color: #dc2626; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 700;">Dilelang</span>
+                                    @if($transaksi)
+                                        @if($transaksi->status == 'aktif')
+                                            @php
+                                                $isJatuhTempo = \Carbon\Carbon::parse($transaksi->tanggal_jatuh_tempo)->startOfDay() < now()->startOfDay();
+                                            @endphp
+                                            @if($isJatuhTempo)
+                                                <span style="background: #fee2e2; color: #b91c1c; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 700;">Jatuh Tempo</span>
+                                            @else
+                                                <span style="background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 700;">Gadai</span>
+                                            @endif
+                                        @elseif($transaksi->status == 'ditebus')
+                                            <span style="background: #dcfce7; color: #15803d; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 700;">Ditebus</span>
+                                        @elseif($transaksi->status == 'dijual')
+                                            <span style="background: #ffe4e6; color: #be123c; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 700;">Dijual</span>
+                                        @else
+                                            <span style="background: #f1f5f9; color: #64748b; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 700;">{{ ucfirst($transaksi->status) }}</span>
+                                        @endif
                                     @else
-                                        <span style="background: #f1f5f9; color: #64748b; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 700;">{{ ucfirst($transaksi->status) }}</span>
+                                        @if($item->status_verifikasi == 'pending')
+                                            <span style="background: #fef3c7; color: #b45309; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 700;">Sedang Ditinjau</span>
+                                        @elseif($item->status_verifikasi == 'terverifikasi')
+                                            <span style="background: #dbeafe; color: #1d4ed8; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 700;">Diterima belum masuk gadai</span>
+                                        @elseif($item->status_verifikasi == 'ditolak')
+                                            <span style="background: #fee2e2; color: #b91c1c; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 700;">Ditolak</span>
+                                        @else
+                                            <span style="background: #f1f5f9; color: #64748b; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 700;">{{ ucfirst($item->status_verifikasi) }}</span>
+                                        @endif
                                     @endif
                                 </td>
                             </tr>
