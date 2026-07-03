@@ -90,6 +90,28 @@
         <!-- LEFT COLUMN -->
         <div class="dashboard-left">
             
+            <!-- Grafik Transaksi Bulanan -->
+            <div class="dash-card">
+                <div class="dash-card-header">
+                    <div class="dash-card-title">
+                        <div class="dash-card-icon bg-purple-100 text-purple-600"><i class="bi bi-bar-chart-fill"></i></div>
+                        Grafik Transaksi Bulanan
+                    </div>
+                    <div class="dash-card-filter">
+                        <form action="{{ route('admin.dashboard') }}" method="GET" id="chartFilterForm">
+                            <select name="range" onchange="showLoadingAndSubmit(this)" class="form-select text-sm border-slate-200 rounded-lg text-slate-600 focus:ring-primary focus:border-primary">
+                                <option value="3" {{ $range == 3 ? 'selected' : '' }}>3 Bulan Terakhir</option>
+                                <option value="6" {{ $range == 6 ? 'selected' : '' }}>6 Bulan Terakhir</option>
+                                <option value="12" {{ $range == 12 ? 'selected' : '' }}>12 Bulan Terakhir</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+                <div class="dash-card-body" id="chartContainer" style="position: relative; height: 1200px;">
+                    <canvas id="transactionChart" style="width: 100%; height: 100%;"></canvas>
+                </div>
+            </div>
+
             <!-- Barang Mendekati Jatuh Tempo -->
             <div class="dash-card">
                 <div class="dash-card-header">
@@ -146,28 +168,6 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
-
-            <!-- Grafik Transaksi Bulanan -->
-            <div class="dash-card">
-                <div class="dash-card-header">
-                    <div class="dash-card-title">
-                        <div class="dash-card-icon bg-purple-100 text-purple-600"><i class="bi bi-bar-chart-fill"></i></div>
-                        Grafik Transaksi Bulanan
-                    </div>
-                    <div class="dash-card-filter">
-                        <form action="{{ route('admin.dashboard') }}" method="GET" id="chartFilterForm">
-                            <select name="range" onchange="showLoadingAndSubmit(this)" class="form-select text-sm border-slate-200 rounded-lg text-slate-600 focus:ring-primary focus:border-primary">
-                                <option value="3" {{ $range == 3 ? 'selected' : '' }}>3 Bulan Terakhir</option>
-                                <option value="6" {{ $range == 6 ? 'selected' : '' }}>6 Bulan Terakhir</option>
-                                <option value="12" {{ $range == 12 ? 'selected' : '' }}>12 Bulan Terakhir</option>
-                            </select>
-                        </form>
-                    </div>
-                </div>
-                <div class="dash-card-body" id="chartContainer" style="position: relative; height: 600px;">
-                    <canvas id="transactionChart" style="width: 100%; height: 100%;"></canvas>
                 </div>
             </div>
 

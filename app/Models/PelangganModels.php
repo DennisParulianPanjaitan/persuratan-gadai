@@ -27,4 +27,9 @@ class PelangganModels extends Model
     {
         return $this->hasMany(TransaksiGadaiModels::class, 'id_pelanggan');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(UserModels::class, 'id_user', 'id_user');
+    }
 }

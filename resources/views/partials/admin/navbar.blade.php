@@ -21,8 +21,12 @@
     <div class="profile" style="display: flex; align-items: center; gap: 15px;">
 
         <div style="display: flex; align-items: center; gap: 10px;">
-            <div class="avatar" style="width: 36px; height: 36px; background: #fbbf24; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">
-                {{ Auth::check() ? strtoupper(substr(Auth::user()->username, 0, 2)) : 'AD' }}
+            <div class="avatar" style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fbbf24; color: #fff; font-weight: bold; font-size: 14px;">
+                @if(Auth::check() && Auth::user()->foto_profil)
+                    <img src="{{ Str::startsWith(Auth::user()->foto_profil, ['http://', 'https://']) ? Auth::user()->foto_profil : asset('storage/' . Auth::user()->foto_profil) }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                @else
+                    {{ Auth::check() ? strtoupper(substr(Auth::user()->username, 0, 2)) : 'AD' }}
+                @endif
             </div>
 
             <div class="profile-info" style="display: flex; flex-direction: column;">

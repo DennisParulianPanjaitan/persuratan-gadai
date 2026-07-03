@@ -105,6 +105,21 @@
 
     </a>
 
+    {{-- ================= Pembayaran ================= --}}
+
+    <span class="menu-heading">
+        PEMBAYARAN
+    </span>
+
+    <a href="{{ route('admin.pembayaran.index') }}"
+       class="menu {{ request()->routeIs('admin.pembayaran.*') ? 'active' : '' }}">
+
+        <i class="bi bi-wallet2"></i>
+
+        <span>Request Pembayaran</span>
+
+    </a>
+
     {{-- ================= Laporan ================= --}}
 
     <span class="menu-heading">
@@ -126,8 +141,8 @@
         AKUN
     </span>
 
-    <a href="{{ route('admin.profile') }}"
-       class="menu {{ request()->routeIs('admin.profile') ? 'active' : '' }}">
+    <a href="{{ route('admin.profile.index') }}"
+       class="menu {{ request()->routeIs('admin.profile.index') ? 'active' : '' }}">
 
         <i class="bi bi-person-gear"></i>
 

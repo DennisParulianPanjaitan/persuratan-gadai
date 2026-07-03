@@ -51,23 +51,14 @@
 
     </a>
 
-    <a href="#"
-       class="menu">
-
-        <i class="bi bi-shop"></i>
-
-        <span>Pembelian Barang</span>
-
-    </a>
-
     {{-- ================= Pengaturan ================= --}}
 
     <span class="menu-heading">
         PENGATURAN
     </span>
 
-    <a href="#"
-       class="menu">
+    <a href="{{ route('pelanggan.profile.index') }}"
+       class="menu {{ request()->routeIs('pelanggan.profile.index') ? 'active' : '' }}">
 
         <i class="bi bi-person-gear"></i>
 

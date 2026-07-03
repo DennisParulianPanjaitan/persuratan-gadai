@@ -16,8 +16,12 @@
                 $pelangganNav = \App\Models\PelangganModels::where('id_user', Auth::id())->first();
                 $namaNav = $pelangganNav ? $pelangganNav->nama : (Auth::user()->username ?? 'Pelanggan');
             @endphp
-            <div class="avatar" style="width: 36px; height: 36px; background: #3b82f6; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">
-                {{ strtoupper(substr($namaNav, 0, 2)) }}
+            <div class="avatar" style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #3b82f6; color: #fff; font-weight: bold; font-size: 14px;">
+                @if(Auth::check() && Auth::user()->foto_profil)
+                    <img src="{{ Str::startsWith(Auth::user()->foto_profil, ['http://', 'https://']) ? Auth::user()->foto_profil : asset('storage/' . Auth::user()->foto_profil) }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                @else
+                    {{ strtoupper(substr($namaNav, 0, 2)) }}
+                @endif
             </div>
             <div class="profile-info" style="display: flex; flex-direction: column;">
                 <span class="profile-name" style="font-weight: 600; font-size: 14px; color: #1f2937;">

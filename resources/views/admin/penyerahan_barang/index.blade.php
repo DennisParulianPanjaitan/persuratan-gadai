@@ -22,15 +22,30 @@
 					</div>
 
 					<div class="table-toolbar__actions">
-						<x-button type="submit" variant="secondary">Filter</x-button>
-						<x-button href="{{ url()->current() }}" variant="secondary">Reset</x-button>
+						<x-button type="button" variant="primary" onclick="openQrScanner()" style="background: #10b981; border-color: #10b981; color: white; display: flex; align-items: center; gap: 8px;">
+							<i class="bi bi-qr-code-scan"></i> Scan QR Pelanggan
+						</x-button>
 					</div>
 				</div>
 
-				<div class="filter-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+				<!-- Modal QR Scanner -->
+				<div id="qrModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+					<div style="background: #fff; width: 90%; max-width: 500px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+						<div style="padding: 16px 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;">
+							<h3 style="margin: 0; font-size: 16px; color: #0f172a; font-weight: 600;"><i class="bi bi-camera" style="margin-right: 8px;"></i> Arahkan QR Code ke Kamera</h3>
+							<button type="button" onclick="closeQrScanner()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #64748b;">&times;</button>
+						</div>
+						<div style="padding: 20px;">
+							<div id="reader" style="width: 100%;"></div>
+							<p style="text-align: center; font-size: 13px; color: #64748b; margin-top: 15px;">Sistem akan otomatis memindai QR Code Pelanggan dan membuka halaman serah terima barang.</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="filter-grid" style="grid-template-columns: max-content 400px; gap: 16px;">
 					<label class="filter-field">
 						<span class="filter-field__label">Tanggal</span>
-						<input type="date" name="tanggal" value="{{ request('tanggal') }}" class="filter-input">
+						<input type="date" name="tanggal" value="{{ request('tanggal') }}" class="filter-input" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; background: #fff; min-width: 200px; width: 100%;">
 					</label>
 
 					<div class="filter-field filter-field--search">
@@ -90,3 +105,115 @@
 		</x-card>
 	</div>
 @endsection
+
+@push('scripts')
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+	let html5QrcodeScanner = null;
+
+	function openQrScanner() {
+		document.getElementById('qrModal').style.display = 'flex';
+		
+		if (!html5QrcodeScanner) {
+			html5QrcodeScanner = new Html5QrcodeScanner(
+				"reader", 
+				{ fps: 10, qrbox: {width: 250, height: 250} }, 
+				/* verbose= */ false
+			);
+		}
+		
+		html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+	}
+
+	function closeQrScanner() {
+		document.getElementById('qrModal').style.display = 'none';
+		if (html5QrcodeScanner) {
+			html5QrcodeScanner.clear().catch(error => {
+				console.error("Failed to clear html5QrcodeScanner. ", error);
+			});
+		}
+	}
+
+	function onScanSuccess(decodedText, decodedResult) {
+		// Stop scanning
+		closeQrScanner();
+		
+		// Customer QR usually contains URL like: http://localhost:8000/surat-gadai/12
+		// We want to extract the ID and redirect to /admin/penyerahan-barang/12
+		try {
+			let url = new URL(decodedText);
+			let pathParts = url.pathname.split('/');
+			let id = pathParts[pathParts.length - 1]; // Get the last part of the path
+			
+			if (id && !isNaN(id)) {
+				window.location.href = "{{ url('/admin/penyerahan-barang') }}/" + id;
+				return;
+			}
+		} catch (e) {
+			// If it's not a URL, maybe it's just the ID or BARANG-ID
+			console.log("Not a valid URL, trying to parse as text.");
+		}
+
+		// Fallback: put text in search and submit
+		let searchInput = document.querySelector('input[name="search"]');
+		if (searchInput) {
+			searchInput.value = decodedText;
+			searchInput.form.submit();
+		}
+	}
+
+	function onScanFailure(error) {
+		// handle scan failure, usually better to ignore and keep scanning.
+	}
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('input[name="search"]');
+        const dateInput = document.querySelector('input[name="tanggal"]');
+        let timer;
+        
+        function fetchFilteredData() {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                const url = new URL(window.location.href);
+                url.searchParams.set('search', searchInput.value);
+                url.searchParams.set('tanggal', dateInput.value);
+                
+                window.history.pushState({}, '', url);
+                
+                fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    const currentTableBody = document.querySelector('.table-responsive tbody');
+                    const newTableBody = doc.querySelector('.table-responsive tbody');
+                    if (currentTableBody && newTableBody) {
+                        currentTableBody.innerHTML = newTableBody.innerHTML;
+                    }
+                    
+                    const currentPagination = document.querySelector('nav[role="navigation"]')?.parentElement;
+                    const newPagination = doc.querySelector('nav[role="navigation"]')?.parentElement;
+                    if (currentPagination && newPagination) {
+                        currentPagination.innerHTML = newPagination.innerHTML;
+                    } else if (currentPagination && !newPagination) {
+                        currentPagination.innerHTML = '';
+                    }
+                });
+            }, 300);
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', fetchFilteredData);
+        }
+
+        if (dateInput) {
+            dateInput.addEventListener('change', fetchFilteredData);
+        }
+    });
+</script>
+@endpush

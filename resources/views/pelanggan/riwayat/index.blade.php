@@ -361,14 +361,6 @@
                     </form>
                 @endif
 
-                @if(in_array($status, ['gadai', 'jatuh_tempo']))
-                    <a href="#" class="btn btn-primary" onclick="alert('Fitur Perpanjangan sedang dalam pengembangan'); return false;">
-                        <i class="bi bi-calendar-plus"></i> Perpanjang
-                    </a>
-                    <a href="#" class="btn" style="background: #10b981; color: white; border: none;" onclick="alert('Fitur Penebusan sedang dalam pengembangan'); return false;">
-                        <i class="bi bi-box-arrow-down"></i> Tebus
-                    </a>
-                @endif
 
                 <a href="{{ route('pelanggan.riwayat.show', $barang->id_barang) }}" class="btn btn-outline" style="background: white;">
                     <i class="bi bi-eye"></i> Detail

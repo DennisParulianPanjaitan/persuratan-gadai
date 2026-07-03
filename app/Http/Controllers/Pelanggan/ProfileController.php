@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Pelanggan;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use App\Models\UserModels;
+use App\Models\PelangganModels;
 use Cloudinary\Cloudinary;
 
 class ProfileController extends Controller
@@ -14,7 +15,9 @@ class ProfileController extends Controller
     public function index()
     {
         $user = auth()->user();
-        return view('admin.profile.index', compact('user'));
+        $pelanggan = PelangganModels::where('id_user', $user->id_user)->first();
+        
+        return view('pelanggan.profile.index', compact('user', 'pelanggan'));
     }
 
     public function update(Request $request)
@@ -26,6 +29,9 @@ class ProfileController extends Controller
             'username' => 'required|string|max:100|unique:users,username,' . $user->id_user . ',id_user',
             'password' => 'nullable|min:6',
             'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'no_hp' => 'required|string|max:15',
+            'email' => 'nullable|email|max:100',
+            'alamat' => 'required|string|max:255',
         ]);
 
         $userModel = UserModels::find($user->id_user);
@@ -68,6 +74,16 @@ class ProfileController extends Controller
         }
 
         $userModel->save();
+
+        // Update Pelanggan data
+        $pelanggan = PelangganModels::where('id_user', $user->id_user)->first();
+        if ($pelanggan) {
+            $pelanggan->nama = $request->nama;
+            $pelanggan->no_hp = $request->no_hp;
+            $pelanggan->email = $request->email;
+            $pelanggan->alamat = $request->alamat;
+            $pelanggan->save();
+        }
 
         return redirect()->back()->with('success', 'Profil berhasil diperbarui!');
     }

@@ -20,15 +20,13 @@
 					</div>
 
 					<div class="table-toolbar__actions">
-						<x-button type="submit" variant="secondary">Filter</x-button>
-						<x-button href="{{ url()->current() }}" variant="secondary">Reset</x-button>
 					</div>
 				</div>
 
-				<div class="filter-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+				<div class="filter-grid" style="grid-template-columns: max-content 400px; gap: 16px;">
 					<label class="filter-field">
 						<span class="filter-field__label">Tanggal</span>
-						<input type="date" name="tanggal" value="{{ request('tanggal') }}" class="filter-input">
+						<input type="date" name="tanggal" value="{{ request('tanggal') }}" class="filter-input" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; background: #fff; min-width: 200px; width: 100%;">
 					</label>
 
 					<div class="filter-field filter-field--search">
@@ -144,6 +142,54 @@
 					});
 				});
 			});
+
+            const searchInput = document.querySelector('input[name="search"]');
+            const dateInput = document.querySelector('input[name="tanggal"]');
+			let timer;
+			
+			function fetchFilteredData() {
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('search', searchInput.value);
+                    url.searchParams.set('tanggal', dateInput.value);
+                    
+                    window.history.pushState({}, '', url);
+                    
+                    fetch(url, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        
+                        const currentTableBody = document.querySelector('.table-responsive tbody');
+                        const newTableBody = doc.querySelector('.table-responsive tbody');
+                        if (currentTableBody && newTableBody) {
+                            currentTableBody.innerHTML = newTableBody.innerHTML;
+                        }
+                        
+                        const currentPagination = document.querySelector('nav[role="navigation"]')?.parentElement;
+                        const newPagination = doc.querySelector('nav[role="navigation"]')?.parentElement;
+                        if (currentPagination && newPagination) {
+                            currentPagination.innerHTML = newPagination.innerHTML;
+                        } else if (currentPagination && !newPagination) {
+                            currentPagination.innerHTML = '';
+                        }
+                    });
+                }, 300);
+            }
+
+            if (searchInput) {
+				searchInput.addEventListener('input', fetchFilteredData);
+			}
+
+            if (dateInput) {
+                dateInput.addEventListener('change', fetchFilteredData);
+            }
 		});
 	</script>
 	@endpush

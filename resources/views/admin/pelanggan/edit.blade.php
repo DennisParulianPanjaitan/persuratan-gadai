@@ -21,13 +21,22 @@
 
 				<div class="form-grid">
 
-					{{-- ID User (Read Only atau Optional edit, disini biarkan opsional) --}}
 					<x-form-group label="ID User (Terkait Akun Login)" name="id_user" hint="Opsional. Isi dengan ID dari tabel users jika pelanggan ini punya akun.">
 						<input type="number" name="id_user" id="id_user"
 						       class="form-input @error('id_user') is-invalid @enderror"
 						       value="{{ old('id_user', $pelanggan->id_user) }}"
 						       placeholder="Contoh: 10">
 					</x-form-group>
+
+					@if($pelanggan->user)
+					{{-- Role User --}}
+					<x-form-group label="Role Akun Pelanggan" name="role">
+						<select name="role" id="role" class="form-input @error('role') is-invalid @enderror">
+							<option value="pelanggan" {{ old('role', $pelanggan->user->role) == 'pelanggan' ? 'selected' : '' }}>Pelanggan</option>
+							<option value="admin" {{ old('role', $pelanggan->user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+						</select>
+					</x-form-group>
+					@endif
 
 					{{-- Nama Pelanggan --}}
 					<x-form-group label="Nama Lengkap" name="nama" :required="true">
@@ -71,7 +80,25 @@
 
 				</div>
 
-				<div class="form-actions">
+				{{-- Reset Password Section --}}
+				@if($pelanggan->id_user)
+				<div style="margin-top: 24px; padding: 20px; border: 1px solid #E2E8F0; border-radius: 12px; background: #F8FAFC;">
+					<div style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+						<input type="checkbox" id="toggle_reset_password" name="reset_password_toggle" value="1" style="width: 18px; height: 18px; cursor: pointer;">
+						<label for="toggle_reset_password" style="font-weight: 600; color: #1E293B; cursor: pointer;">Reset Password Akun Pelanggan?</label>
+					</div>
+
+					<div id="reset_password_container" style="display: none;">
+						<x-form-group label="Password Baru" name="new_password" hint="Minimal 6 karakter. Biarkan kosong jika batal reset.">
+							<input type="password" name="new_password" id="new_password"
+							       class="form-input @error('new_password') is-invalid @enderror"
+							       placeholder="Masukkan password baru...">
+						</x-form-group>
+					</div>
+				</div>
+				@endif
+
+				<div class="form-actions" style="margin-top: 24px;">
 					<x-button href="{{ route('admin.pelanggan.index') }}" variant="secondary">Batal</x-button>
 					<x-button type="submit" variant="primary">Simpan Perubahan</x-button>
 				</div>
@@ -82,6 +109,23 @@
 @endsection
 
 @push('scripts')
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const toggleCheckbox = document.getElementById('toggle_reset_password');
+			const passwordContainer = document.getElementById('reset_password_container');
+			
+			if (toggleCheckbox && passwordContainer) {
+				toggleCheckbox.addEventListener('change', function() {
+					if (this.checked) {
+						passwordContainer.style.display = 'block';
+					} else {
+						passwordContainer.style.display = 'none';
+						document.getElementById('new_password').value = '';
+					}
+				});
+			}
+		});
+	</script>
 	@if ($errors->any())
 		<script>
 			Swal.fire({

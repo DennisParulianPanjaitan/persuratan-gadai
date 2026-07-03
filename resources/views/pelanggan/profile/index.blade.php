@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.pelanggan')
 
 @section('title', 'Profil Saya')
 
@@ -25,7 +25,7 @@
     }
 
     .profile-header {
-        background: linear-gradient(135deg, var(--primary) 0%, #312e81 100%);
+        background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%);
         height: 140px;
         position: relative;
     }
@@ -49,7 +49,7 @@
         border: 4px solid #fff;
         box-shadow: 0 8px 16px rgba(0,0,0,0.1);
         object-fit: cover;
-        background: #f1f5f9;
+        background: #eff6ff;
     }
 
     .profile-avatar-btn {
@@ -72,7 +72,7 @@
     }
 
     .profile-avatar-btn:hover {
-        color: var(--primary);
+        color: #3b82f6;
         transform: scale(1.05);
     }
 
@@ -106,8 +106,8 @@
     .profile-role-badge {
         display: inline-block;
         padding: 4px 12px;
-        background: #e0e7ff;
-        color: var(--primary);
+        background: #dbeafe;
+        color: #2563eb;
         border-radius: 20px;
         font-size: 12px;
         font-weight: 600;
@@ -128,7 +128,7 @@
     }
 
     .section-title i {
-        color: var(--primary);
+        color: #3b82f6;
         font-size: 18px;
     }
 
@@ -143,6 +143,10 @@
         display: flex;
         flex-direction: column;
         gap: 8px;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
     }
 
     .form-label {
@@ -176,12 +180,18 @@
         background: #f8fafc;
         transition: all 0.2s ease;
     }
+    
+    textarea.form-control {
+        padding-top: 14px;
+        min-height: 100px;
+        resize: vertical;
+    }
 
     .form-control:focus {
         outline: none;
         background: #fff;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
     }
 
     .form-hint {
@@ -191,7 +201,7 @@
     }
 
     .btn-save {
-        background: var(--primary);
+        background: #2563eb;
         color: #fff;
         border: none;
         padding: 14px 32px;
@@ -207,9 +217,9 @@
     }
 
     .btn-save:hover {
-        background: #4338ca;
+        background: #1d4ed8;
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
     }
 
     .btn-save:active {
@@ -307,7 +317,7 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('pelanggan.profile.update') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -319,7 +329,7 @@
                     @php
                         $avatarUrl = $user->foto_profil 
                             ? (Str::startsWith($user->foto_profil, ['http://', 'https://']) ? $user->foto_profil : asset('storage/' . $user->foto_profil))
-                            : 'https://ui-avatars.com/api/?name=' . urlencode($user->nama) . '&background=4F46E5&color=fff&size=256';
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($user->nama) . '&background=3b82f6&color=fff&size=256';
                     @endphp
                     <img src="{{ $avatarUrl }}" alt="Foto Profil" class="profile-avatar" id="avatarPreview">
                     <div class="profile-avatar-btn" title="Ubah Foto Profil">
@@ -330,11 +340,11 @@
 
                 <div class="profile-info-header">
                     <h2 class="profile-name">{{ $user->nama }}</h2>
-                    <div><span class="profile-role-badge">Administrator</span></div>
+                    <div><span class="profile-role-badge">Pelanggan</span></div>
                 </div>
 
                 <div class="section-title">
-                    <i class="bi bi-person-lines-fill"></i> Data Profil
+                    <i class="bi bi-person-lines-fill"></i> Data Pribadi
                 </div>
                 
                 <div class="form-grid">
@@ -347,19 +357,43 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Username</label>
+                        <label class="form-label">No. Handphone</label>
+                        <div class="input-wrapper">
+                            <i class="bi bi-phone input-icon"></i>
+                            <input type="text" class="form-control" name="no_hp" value="{{ old('no_hp', $pelanggan->no_hp ?? '') }}" required placeholder="Contoh: 08123456789">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email <span style="font-weight: 400; color: #94a3b8;">(Opsional)</span></label>
+                        <div class="input-wrapper">
+                            <i class="bi bi-envelope input-icon"></i>
+                            <input type="email" class="form-control" name="email" value="{{ old('email', $pelanggan->email ?? '') }}" placeholder="Contoh: nama@email.com">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label">Alamat Lengkap</label>
+                        <div class="input-wrapper">
+                            <i class="bi bi-geo-alt input-icon" style="top: 14px;"></i>
+                            <textarea class="form-control" name="alamat" required placeholder="Masukkan alamat domisili lengkap...">{{ old('alamat', $pelanggan->alamat ?? '') }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-title mt-2">
+                    <i class="bi bi-shield-lock-fill"></i> Keamanan Akun
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Username Login</label>
                         <div class="input-wrapper">
                             <i class="bi bi-at input-icon"></i>
                             <input type="text" class="form-control" name="username" value="{{ old('username', $user->username) }}" required placeholder="Masukkan username unik">
                         </div>
                     </div>
-                </div>
 
-                <div class="section-title mt-4">
-                    <i class="bi bi-shield-lock-fill"></i> Keamanan Akun
-                </div>
-
-                <div class="form-grid">
                     <div class="form-group">
                         <label class="form-label">Password Baru <span style="font-weight: 400; color: #94a3b8;">(Opsional)</span></label>
                         <div class="input-wrapper">

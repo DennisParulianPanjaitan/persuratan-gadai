@@ -18,7 +18,6 @@
 					</div>
 
 					<div class="table-toolbar__actions">
-						<x-button type="submit" variant="secondary">Filter</x-button>
 						<x-button href="{{ url()->current() }}" variant="secondary">Reset</x-button>
 					</div>
 				</div>

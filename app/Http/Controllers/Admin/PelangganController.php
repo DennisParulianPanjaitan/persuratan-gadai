@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PelangganModels;
+use App\Models\UserModels;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Hash;
 
 class PelangganController extends Controller
 {
@@ -103,6 +105,22 @@ class PelangganController extends Controller
         ]);
 
         $pelanggan->update($data);
+
+        if ($request->reset_password_toggle && $request->filled('new_password') && $pelanggan->id_user) {
+            $user = UserModels::find($pelanggan->id_user);
+            if ($user) {
+                $user->password = Hash::make($request->new_password);
+                $user->save();
+            }
+        }
+
+        if ($request->has('role') && $pelanggan->id_user) {
+            $user = UserModels::find($pelanggan->id_user);
+            if ($user) {
+                $user->role = $request->role;
+                $user->save();
+            }
+        }
 
         return redirect()
             ->route('admin.pelanggan.index')

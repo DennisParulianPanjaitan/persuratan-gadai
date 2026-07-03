@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Pelanggan;
 use App\Http\Controllers\Controller;
 use App\Models\BarangModels;
 use App\Models\PelangganModels;
+use App\Models\PembayaranOnlineModels;
+use App\Models\TransaksiGadaiModels;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class RiwayatGadaiController extends Controller
 {
@@ -101,5 +104,108 @@ class RiwayatGadaiController extends Controller
         $barang->delete();
 
         return redirect()->route('pelanggan.riwayat.index')->with('success', 'Riwayat pengajuan berhasil dihapus.');
+    }
+
+    public function bayarTebus(Request $request, $id_transaksi_gadai)
+    {
+        $request->validate([
+            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'nominal_bayar' => 'required|numeric|min:1'
+        ], [
+            'bukti_pembayaran.required' => 'Bukti pembayaran wajib diunggah',
+            'bukti_pembayaran.image' => 'File harus berupa gambar',
+            'bukti_pembayaran.max' => 'Ukuran file maksimal 2MB',
+            'nominal_bayar.required' => 'Terjadi kesalahan, nominal tidak terbaca'
+        ]);
+
+        $transaksi = TransaksiGadaiModels::where('id_transaksi_gadai', $id_transaksi_gadai)
+            ->where('status', 'aktif')
+            ->firstOrFail();
+
+        // Cek apakah sudah ada pembayaran pending
+        $pending = PembayaranOnlineModels::where('id_transaksi_gadai', $transaksi->id_transaksi_gadai)
+            ->where('status', 'menunggu_konfirmasi')
+            ->first();
+
+        if ($pending) {
+            return redirect()->back()->with('error', 'Anda sudah memiliki pengajuan pembayaran yang sedang menunggu konfirmasi.');
+        }
+
+        $buktiUrl = '';
+        if ($request->hasFile('bukti_pembayaran')) {
+            $cloudinaryUrl = env('CLOUDINARY_URL');
+            if ($cloudinaryUrl) {
+                $cloudinary = new \Cloudinary\Cloudinary($cloudinaryUrl);
+                $upload = $cloudinary->uploadApi()->upload($request->file('bukti_pembayaran')->getRealPath(), [
+                    'folder' => 'gerlian-jaya/pembayaran'
+                ]);
+                $buktiUrl = $upload['secure_url'];
+            } else {
+                $buktiUrl = $request->file('bukti_pembayaran')->store('pembayaran', 'public');
+            }
+        }
+
+        PembayaranOnlineModels::create([
+            'id_transaksi_gadai' => $transaksi->id_transaksi_gadai,
+            'jenis_pembayaran' => 'tebus',
+            'jumlah_bulan' => null,
+            'nominal_bayar' => $request->nominal_bayar,
+            'bukti_pembayaran' => $buktiUrl,
+            'status' => 'menunggu_konfirmasi'
+        ]);
+
+        return redirect()->back()->with('success', 'Bukti pembayaran tebus gadai berhasil dikirim dan sedang menunggu konfirmasi Admin.');
+    }
+
+    public function bayarPerpanjang(Request $request, $id_transaksi_gadai)
+    {
+        $request->validate([
+            'jumlah_bulan' => 'required|integer|min:1|max:4',
+            'nominal_bayar' => 'required|numeric|min:1',
+            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'jumlah_bulan.required' => 'Jumlah bulan wajib diisi',
+            'bukti_pembayaran.required' => 'Bukti pembayaran wajib diunggah',
+            'bukti_pembayaran.image' => 'File harus berupa gambar',
+            'bukti_pembayaran.max' => 'Ukuran file maksimal 2MB',
+        ]);
+
+        $transaksi = TransaksiGadaiModels::where('id_transaksi_gadai', $id_transaksi_gadai)
+            ->where('status', 'aktif')
+            ->firstOrFail();
+
+        // Cek apakah sudah ada pembayaran pending
+        $pending = PembayaranOnlineModels::where('id_transaksi_gadai', $transaksi->id_transaksi_gadai)
+            ->where('status', 'menunggu_konfirmasi')
+            ->first();
+
+        if ($pending) {
+            return redirect()->back()->with('error', 'Anda sudah memiliki pengajuan pembayaran yang sedang menunggu konfirmasi.');
+        }
+
+        $buktiUrl = '';
+        if ($request->hasFile('bukti_pembayaran')) {
+            $cloudinaryUrl = env('CLOUDINARY_URL');
+            if ($cloudinaryUrl) {
+                $cloudinary = new \Cloudinary\Cloudinary($cloudinaryUrl);
+                $upload = $cloudinary->uploadApi()->upload($request->file('bukti_pembayaran')->getRealPath(), [
+                    'folder' => 'gerlian-jaya/pembayaran'
+                ]);
+                $buktiUrl = $upload['secure_url'];
+            } else {
+                $buktiUrl = $request->file('bukti_pembayaran')->store('pembayaran', 'public');
+            }
+        }
+
+        PembayaranOnlineModels::create([
+            'id_transaksi_gadai' => $transaksi->id_transaksi_gadai,
+            'jenis_pembayaran' => 'perpanjangan',
+            'jumlah_bulan' => $request->jumlah_bulan,
+            'nominal_bayar' => $request->nominal_bayar,
+            'bukti_pembayaran' => $buktiUrl,
+            'status' => 'menunggu_konfirmasi'
+        ]);
+
+        return redirect()->back()->with('success', 'Bukti pembayaran perpanjangan gadai berhasil dikirim dan sedang menunggu konfirmasi Admin.');
     }
 }

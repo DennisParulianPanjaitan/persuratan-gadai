@@ -492,12 +492,16 @@
                         <label class="remember-me">
                             <input type="checkbox" name="remember" style="accent-color: var(--primary-dark);"> Ingat saya
                         </label>
-                        <a href="#" class="forgot-link">Lupa kata sandi?</a>
+                        <a href="{{ route('password.forgot') }}" class="forgot-link">Lupa kata sandi?</a>
                     </div>
 
                     <button type="submit" class="btn-login">
                         <i class="bi bi-box-arrow-in-right"></i> Masuk
                     </button>
+                    
+                    <div style="margin-top: 15px; text-align: center; font-size: 13px;">
+                        Belum punya akun? <a href="{{ route('register') }}" style="color: var(--accent-blue); text-decoration: none; font-weight: 600;">Buat Akun</a>
+                    </div>
                 </form>
 
                 <div class="copyright">
@@ -540,19 +544,44 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Fitur Toggle Password
         const togglePassword = document.querySelector('#togglePassword');
         const password = document.querySelector('#passwordField');
 
-        togglePassword.addEventListener('click', function (e) {
-            // toggle type
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            // toggle icon
-            this.classList.toggle('bi-eye');
-            this.classList.toggle('bi-eye-slash');
-        });
+        if (togglePassword && password) {
+            togglePassword.addEventListener('click', function (e) {
+                // toggle type
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                // toggle icon
+                this.classList.toggle('bi-eye');
+                this.classList.toggle('bi-eye-slash');
+            });
+        }
+
+        // Tampilkan notifikasi sukses jika ada (seperti setelah register/reset password)
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: 'var(--primary-dark)',
+                confirmButtonText: 'Tutup'
+            });
+        @endif
+        
+        // Notifikasi error dari session
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Terjadi Kesalahan!',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#dc2626',
+                confirmButtonText: 'Tutup'
+            });
+        @endif
     </script>
 </body>
 </html>

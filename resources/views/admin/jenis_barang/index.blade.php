@@ -16,11 +16,11 @@
 						<div class="table-toolbar__title">Filter Data Jenis Barang</div>
 						<div class="table-toolbar__subtitle">Gunakan filter untuk menyaring data jenis barang dari database.</div>
 					</div>
-
+<!-- 
 					<div class="table-toolbar__actions">
 						<x-button type="submit" variant="secondary" id="btnFilter">Filter</x-button>
 						<x-button href="{{ url()->current() }}" variant="secondary">Reset</x-button>
-					</div>
+					</div> -->
 				</div>
 
 				<div class="filter-grid" style="max-width: 2000px;">
