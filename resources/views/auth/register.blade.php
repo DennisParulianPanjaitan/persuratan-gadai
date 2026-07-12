@@ -251,7 +251,7 @@
                     <label class="form-label">Username</label>
                     <div class="input-group">
                         <i class="bi bi-person-badge input-icon"></i>
-                        <input type="text" name="username" class="form-control @error('username') is-invalid @enderror" value="{{ old('username') }}" placeholder="Contoh: yoru_satoru" required>
+                        <input type="text" name="username" class="form-control @error('username') is-invalid @enderror" value="{{ old('username') }}" placeholder="Contoh: sriminarsih" required>
                     </div>
                 </div>
                 <div class="form-group">

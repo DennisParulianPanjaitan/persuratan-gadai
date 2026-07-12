@@ -66,13 +66,4 @@
 
     </a>
 
-    <a href="{{ url('/') }}"
-       class="menu">
-
-        <i class="bi bi-house"></i>
-
-        <span>Ke Halaman Utama</span>
-
-    </a>
-
 </aside>

@@ -472,7 +472,7 @@
                     @csrf
                     
                     <div class="form-group">
-                        <label class="form-label">Username / No. HP</label>
+                        <label class="form-label">Username</label>
                         <div class="input-group">
                             <i class="bi bi-person input-icon"></i>
                             <input type="text" name="username" class="form-control" placeholder="Masukkan username atau No. HP" value="{{ old('username') }}" required autofocus>
