@@ -410,24 +410,34 @@
                     $statusClass = 'menunggu';
                     $statusText = 'MENUNGGU PERSETUJUAN';
 
-                    if ($barang->status_verifikasi == 'ditolak') {
-                        $statusClass = 'ditolak';
-                        $statusText = 'DITOLAK';
-                    } elseif ($barang->status_verifikasi == 'disetujui') {
-                        if (!$transaksi) {
-                            $statusClass = 'disetujui-belum-gadai';
-                            $statusText = 'DISETUJUI (Proses)';
-                        } else {
+                    if ($transaksi) {
+                        if ($barang->status_verifikasi == 'terverifikasi') {
                             if ($transaksi->status == 'aktif') {
-                                $statusClass = 'gadai-aktif';
-                                $statusText = 'GADAI AKTIF';
+                                $isJatuhTempo = \Carbon\Carbon::parse($transaksi->tanggal_jatuh_tempo)->startOfDay()->lt(\Carbon\Carbon::today());
+                                $hasPenjualan = $transaksi->penjualan()->exists();
+
+                                if ($isJatuhTempo && !$hasPenjualan) {
+                                    $statusClass = 'ditolak'; // Warna merah
+                                    $statusText = 'JATUH TEMPO';
+                                } else {
+                                    $statusClass = 'gadai-aktif';
+                                    $statusText = 'GADAI AKTIF';
+                                }
                             } elseif ($transaksi->status == 'ditebus') {
                                 $statusClass = 'ditebus';
                                 $statusText = 'TELAH DITEBUS';
-                            } elseif ($transaksi->status == 'lelang') {
-                                $statusClass = 'ditolak'; // Red color
+                            } elseif ($transaksi->status == 'dijual') {
+                                $statusClass = 'ditolak';
                                 $statusText = 'DIJUAL / LELANG';
                             }
+                        }
+                    } else {
+                        if ($barang->status_verifikasi == 'ditolak') {
+                            $statusClass = 'ditolak';
+                            $statusText = 'DITOLAK';
+                        } elseif ($barang->status_verifikasi == 'terverifikasi') {
+                            $statusClass = 'disetujui-belum-gadai';
+                            $statusText = 'DISETUJUI (Proses)';
                         }
                     }
                 @endphp
