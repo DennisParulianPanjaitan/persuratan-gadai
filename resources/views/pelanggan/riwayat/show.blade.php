@@ -188,6 +188,9 @@
             </div>
 
             @if($transaksi && $transaksi->status == 'aktif')
+                @php
+                    $isJatuhTempo = \Carbon\Carbon::parse($transaksi->tanggal_jatuh_tempo)->startOfDay()->lt(\Carbon\Carbon::today());
+                @endphp
                 <hr style="border: 0; border-top: 1px dashed #e2e8f0; margin: 20px 0;">
                 <h4 style="margin: 0 0 15px 0; font-size: 16px; font-weight: 700; color: #0f172a;">Aksi Pembayaran</h4>
                 
@@ -197,6 +200,14 @@
                         <div>
                             <strong>Pembayaran Sedang Diproses</strong><br>
                             Anda telah mengajukan {{ ucfirst($pendingPayment->jenis_pembayaran) }} (Rp {{ number_format($pendingPayment->nominal_bayar, 0, ',', '.') }}) dan sedang menunggu konfirmasi admin.
+                        </div>
+                    </div>
+                @elseif($isJatuhTempo)
+                    <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 16px; border-radius: 8px; color: #991b1b; font-size: 14px; display: flex; gap: 12px; align-items: center;">
+                        <i class="bi bi-exclamation-triangle-fill" style="font-size: 20px; color: #dc2626;"></i>
+                        <div>
+                            <strong>Melewati Jatuh Tempo</strong><br>
+                            Masa gadai barang ini telah habis. Aksi pembayaran online dinonaktifkan. Silakan segera datang ke loket atau hubungi admin.
                         </div>
                     </div>
                 @else
